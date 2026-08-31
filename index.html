@@ -1,0 +1,1253 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Hockey</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    user-select: none;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #06101d;
+    font-family: Arial, Helvetica, sans-serif;
+    color: white;
+}
+
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    cursor: crosshair;
+}
+
+#hud {
+    position: fixed;
+    top: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(900px, 94vw);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.scoreBox {
+    min-width: 170px;
+    padding: 10px 22px;
+    text-align: center;
+    border-radius: 14px;
+    background: rgba(5, 15, 28, .85);
+    border: 2px solid rgba(255,255,255,.15);
+    box-shadow: 0 5px 25px rgba(0,0,0,.35);
+}
+
+.team {
+    font-size: 13px;
+    font-weight: bold;
+    opacity: .75;
+}
+
+.score {
+    font-size: 38px;
+    font-weight: 900;
+}
+
+#timer {
+    font-size: 30px;
+    font-weight: 900;
+    background: rgba(5,15,28,.85);
+    padding: 10px 20px;
+    border-radius: 14px;
+}
+
+#help {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    padding: 13px 17px;
+    background: rgba(5,15,28,.82);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    z-index: 5;
+}
+
+#stats {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    padding: 13px 17px;
+    background: rgba(5,15,28,.82);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    z-index: 5;
+}
+
+#message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(.8);
+    font-size: clamp(35px, 7vw, 90px);
+    font-weight: 1000;
+    text-shadow: 0 5px 25px black;
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s;
+    z-index: 10;
+}
+
+#message.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+button {
+    position: fixed;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 9px 18px;
+    border: 0;
+    border-radius: 10px;
+    background: #fff;
+    color: #111;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 8;
+}
+
+button:hover {
+    background: #dff5ff;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game"></canvas>
+
+<div id="hud">
+    <div class="scoreBox">
+        <div class="team">BLUE</div>
+        <div class="score" id="blueScore">0</div>
+    </div>
+
+    <div id="timer">03:00</div>
+
+    <div class="scoreBox">
+        <div class="team">RED</div>
+        <div class="score" id="redScore">0</div>
+    </div>
+</div>
+
+<button id="pause">PAUSE</button>
+
+<div id="help">
+    <b>CONTROLS</b><br>
+    WASD / Arrow Keys — Move<br>
+    Mouse — Aim<br>
+    Left Click — Shoot<br>
+    Space — Power Shot<br>
+    Shift — Sprint<br>
+    P — Pause
+</div>
+
+<div id="stats">
+    Shots: <b id="shots">0</b><br>
+    Hits: <b id="hits">0</b><br>
+    Speed: <b id="speed">0</b>
+</div>
+
+<div id="message"></div>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let W, H;
+let scale = 1;
+
+function resize() {
+    W = canvas.width = innerWidth * devicePixelRatio;
+    H = canvas.height = innerHeight * devicePixelRatio;
+    canvas.style.width = innerWidth + "px";
+    canvas.style.height = innerHeight + "px";
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    W = innerWidth;
+    H = innerHeight;
+}
+
+addEventListener("resize", resize);
+resize();
+
+const keys = {};
+const mouse = {
+    x: innerWidth / 2,
+    y: innerHeight / 2,
+    down: false
+};
+
+addEventListener("keydown", e => {
+    keys[e.key.toLowerCase()] = true;
+
+    if (e.code === "Space") {
+        e.preventDefault();
+        powerShot();
+    }
+
+    if (e.key.toLowerCase() === "p") {
+        togglePause();
+    }
+});
+
+addEventListener("keyup", e => {
+    keys[e.key.toLowerCase()] = false;
+});
+
+canvas.addEventListener("mousemove", e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+canvas.addEventListener("mousedown", () => {
+    mouse.down = true;
+    shoot(false);
+});
+
+canvas.addEventListener("mouseup", () => {
+    mouse.down = false;
+});
+
+document.getElementById("pause").onclick = togglePause;
+
+let paused = false;
+let gameOver = false;
+
+let blueScore = 0;
+let redScore = 0;
+
+let shots = 0;
+let hits = 0;
+
+let gameTime = 180;
+
+const rink = {
+    x: 90,
+    y: 125,
+    w: 0,
+    h: 0,
+    radius: 45
+};
+
+function updateRink() {
+    rink.w = W - 180;
+    rink.h = H - 230;
+
+    if (rink.w < 650) rink.w = W - 40;
+    if (rink.h < 350) rink.h = H - 160;
+
+    rink.x = (W - rink.w) / 2;
+    rink.y = 125;
+}
+
+updateRink();
+
+class Player {
+    constructor(x, y, team, color, ai = false) {
+        this.x = x;
+        this.y = y;
+
+        this.vx = 0;
+        this.vy = 0;
+
+        this.team = team;
+        this.color = color;
+        this.ai = ai;
+
+        this.radius = 22;
+        this.maxSpeed = 4.5;
+        this.acceleration = .42;
+        this.friction = .91;
+
+        this.cooldown = 0;
+        this.hitCooldown = 0;
+
+        this.energy = 100;
+    }
+
+    update() {
+        if (this.cooldown > 0) this.cooldown--;
+        if (this.hitCooldown > 0) this.hitCooldown--;
+
+        if (this.ai) {
+            this.updateAI();
+        } else {
+            this.updatePlayer();
+        }
+
+        this.x += this.vx;
+        this.y += this.vy;
+
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+
+        this.energy += .2;
+        this.energy = Math.min(100, this.energy);
+
+        this.x = Math.max(rink.x + this.radius, Math.min(
+            rink.x + rink.w - this.radius,
+            this.x
+        ));
+
+        this.y = Math.max(rink.y + this.radius, Math.min(
+            rink.y + rink.h - this.radius,
+            this.y
+        ));
+    }
+
+    updatePlayer() {
+        let ax = 0;
+        let ay = 0;
+
+        if (keys["w"] || keys["arrowup"]) ay--;
+        if (keys["s"] || keys["arrowdown"]) ay++;
+        if (keys["a"] || keys["arrowleft"]) ax--;
+        if (keys["d"] || keys["arrowright"]) ax++;
+
+        const len = Math.hypot(ax, ay);
+
+        if (len) {
+            ax /= len;
+            ay /= len;
+
+            let speed = this.maxSpeed;
+
+            if (keys["shift"] && this.energy > 0) {
+                speed = 7;
+                this.energy -= .8;
+            }
+
+            this.vx += ax * this.acceleration * (speed / 4.5);
+            this.vy += ay * this.acceleration * (speed / 4.5);
+
+            const velocity = Math.hypot(this.vx, this.vy);
+
+            if (velocity > speed) {
+                this.vx = this.vx / velocity * speed;
+                this.vy = this.vy / velocity * speed;
+            }
+        }
+    }
+
+    updateAI() {
+        const dx = puck.x - this.x;
+        const dy = puck.y - this.y;
+        const dist = Math.hypot(dx, dy);
+
+        let targetX = puck.x;
+        let targetY = puck.y;
+
+        if (puck.x < rink.x + rink.w / 2) {
+            targetX = rink.x + rink.w * .55;
+        }
+
+        if (dist < 500) {
+            targetX = puck.x;
+            targetY = puck.y;
+        }
+
+        const angle = Math.atan2(targetY - this.y, targetX - this.x);
+
+        this.vx += Math.cos(angle) * .25;
+        this.vy += Math.sin(angle) * .25;
+
+        const speed = Math.hypot(this.vx, this.vy);
+
+        if (speed > 4) {
+            this.vx = this.vx / speed * 4;
+            this.vy = this.vy / speed * 4;
+        }
+
+        if (dist < 65 && this.cooldown <= 0) {
+            this.shootAI();
+        }
+    }
+
+    shootAI() {
+        const targetX = rink.x + 20;
+        const targetY = rink.y + rink.h / 2;
+
+        shootPuck(this, targetX, targetY, 8);
+        this.cooldown = 45;
+    }
+
+    draw() {
+        ctx.save();
+
+        ctx.translate(this.x, this.y);
+
+        const angle = Math.atan2(
+            puck.y - this.y,
+            puck.x - this.x
+        );
+
+        ctx.rotate(angle);
+
+        // shadow
+        ctx.beginPath();
+        ctx.ellipse(2, 7, 24, 11, 0, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,0,0,.18)";
+        ctx.fill();
+
+        // stick
+        ctx.beginPath();
+        ctx.moveTo(10, 5);
+        ctx.lineTo(42, 15);
+        ctx.lineWidth = 5;
+        ctx.strokeStyle = "#402b16";
+        ctx.stroke();
+
+        // player
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+
+        // helmet
+        ctx.beginPath();
+        ctx.arc(-5, -7, 11, Math.PI, Math.PI * 2);
+        ctx.fillStyle = "#111";
+        ctx.fill();
+
+        ctx.restore();
+    }
+}
+
+class Goalie {
+    constructor(x, y, team, color) {
+        this.x = x;
+        this.y = y;
+        this.team = team;
+        this.color = color;
+        this.radius = 27;
+        this.vy = 0;
+    }
+
+    update() {
+        const targetY = puck.y;
+
+        this.y += (targetY - this.y) * .08;
+
+        this.y = Math.max(
+            rink.y + 60,
+            Math.min(rink.y + rink.h - 60, this.y)
+        );
+
+        const goalX = this.team === "blue"
+            ? rink.x + 35
+            : rink.x + rink.w - 35;
+
+        this.x = goalX;
+    }
+
+    draw() {
+        ctx.save();
+
+        ctx.translate(this.x, this.y);
+
+        ctx.beginPath();
+        ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = "white";
+        ctx.stroke();
+
+        // mask
+        ctx.beginPath();
+        ctx.arc(0, -5, 16, 0, Math.PI * 2);
+        ctx.fillStyle = "#ddd";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(-12, 2);
+        ctx.lineTo(12, 2);
+        ctx.strokeStyle = "#222";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.restore();
+    }
+}
+
+const player = new Player(0, 0, "blue", "#176cff");
+const enemy = new Player(0, 0, "red", "#e73545", true);
+
+const blueGoalie = new Goalie(0, 0, "blue", "#176cff");
+const redGoalie = new Goalie(0, 0, "red", "#e73545");
+
+const puck = {
+    x: 0,
+    y: 0,
+    vx: 0,
+    vy: 0,
+    radius: 10,
+    spin: 0
+};
+
+function resetPositions() {
+    player.x = rink.x + rink.w * .30;
+    player.y = rink.y + rink.h / 2;
+
+    enemy.x = rink.x + rink.w * .70;
+    enemy.y = rink.y + rink.h / 2;
+
+    blueGoalie.x = rink.x + 35;
+    blueGoalie.y = rink.y + rink.h / 2;
+
+    redGoalie.x = rink.x + rink.w - 35;
+    redGoalie.y = rink.y + rink.h / 2;
+
+    puck.x = rink.x + rink.w / 2;
+    puck.y = rink.y + rink.h / 2;
+
+    puck.vx = 0;
+    puck.vy = 0;
+}
+
+resetPositions();
+
+function shoot(fromPlayer, targetX, targetY, power) {
+    if (fromPlayer.cooldown > 0) return;
+
+    const dx = targetX - fromPlayer.x;
+    const dy = targetY - fromPlayer.y;
+    const len = Math.hypot(dx, dy);
+
+    if (len < 1) return;
+
+    const dist = Math.hypot(
+        puck.x - fromPlayer.x,
+        puck.y - fromPlayer.y
+    );
+
+    if (dist > 70) return;
+
+    shootPuck(
+        fromPlayer,
+        targetX,
+        targetY,
+        power
+    );
+
+    fromPlayer.cooldown = 18;
+
+    if (!fromPlayer.ai) shots++;
+}
+
+function shootPuck(fromPlayer, targetX, targetY, power) {
+    const dx = targetX - fromPlayer.x;
+    const dy = targetY - fromPlayer.y;
+    const len = Math.hypot(dx, dy);
+
+    puck.x = fromPlayer.x + dx / len * 30;
+    puck.y = fromPlayer.y + dy / len * 30;
+
+    puck.vx = dx / len * power;
+    puck.vy = dy / len * power;
+
+    createParticles(puck.x, puck.y, 8);
+    beep(260, .04);
+}
+
+function shootMouse() {
+    shoot(player, mouse.x, mouse.y, 9);
+}
+
+function powerShot() {
+    if (player.energy < 35) return;
+
+    const dx = mouse.x - player.x;
+    const dy = mouse.y - player.y;
+    const len = Math.hypot(dx, dy);
+
+    if (len < 1) return;
+
+    const dist = Math.hypot(
+        puck.x - player.x,
+        puck.y - player.y
+    );
+
+    if (dist > 75) return;
+
+    player.energy -= 35;
+
+    shootPuck(
+        player,
+        mouse.x,
+        mouse.y,
+        15
+    );
+
+    player.cooldown = 30;
+
+    shots++;
+
+    createParticles(puck.x, puck.y, 25);
+    beep(80, .15);
+}
+
+function shoot(mousePower) {
+    if (mousePower) powerShot();
+    else shootMouse();
+}
+
+function collideWithPlayer(p) {
+    const dx = puck.x - p.x;
+    const dy = puck.y - p.y;
+
+    const dist = Math.hypot(dx, dy);
+    const minDist = p.radius + puck.radius;
+
+    if (dist < minDist) {
+        const nx = dx / (dist || 1);
+        const ny = dy / (dist || 1);
+
+        puck.x = p.x + nx * minDist;
+        puck.y = p.y + ny * minDist;
+
+        const speed = Math.max(
+            3,
+            Math.hypot(p.vx, p.vy) + 1
+        );
+
+        puck.vx = nx * speed + p.vx * .7;
+        puck.vy = ny * speed + p.vy * .7;
+
+        createParticles(puck.x, puck.y, 4);
+    }
+}
+
+function checkPlayerCollision() {
+    const dx = enemy.x - player.x;
+    const dy = enemy.y - player.y;
+    const dist = Math.hypot(dx, dy);
+
+    if (dist < 42 && player.hitCooldown <= 0) {
+        const nx = dx / (dist || 1);
+        const ny = dy / (dist || 1);
+
+        enemy.vx += nx * 3;
+        enemy.vy += ny * 3;
+
+        player.vx -= nx * .8;
+        player.vy -= ny * .8;
+
+        player.hitCooldown = 20;
+        hits++;
+
+        createParticles(
+            (player.x + enemy.x) / 2,
+            (player.y + enemy.y) / 2,
+            12
+        );
+
+        beep(120, .06);
+    }
+}
+
+function checkGoalie(g) {
+    const dx = puck.x - g.x;
+    const dy = puck.y - g.y;
+
+    const dist = Math.hypot(dx, dy);
+
+    if (dist < g.radius + puck.radius) {
+        const nx = dx / (dist || 1);
+        const ny = dy / (dist || 1);
+
+        puck.vx = nx * 8;
+        puck.vy = ny * 8;
+
+        puck.x = g.x + nx * (g.radius + puck.radius);
+        puck.y = g.y + ny * (g.radius + puck.radius);
+
+        createParticles(puck.x, puck.y, 16);
+        beep(90, .08);
+    }
+}
+
+function checkGoal() {
+    const goalDepth = 30;
+    const goalHeight = 150;
+
+    const goalTop = rink.y + rink.h / 2 - goalHeight / 2;
+    const goalBottom = goalTop + goalHeight;
+
+    // Blue goal
+    if (
+        puck.x < rink.x - goalDepth &&
+        puck.y > goalTop &&
+        puck.y < goalBottom
+    ) {
+        redScore++;
+        goal("RED SCORES!");
+    }
+
+    // Red goal
+    if (
+        puck.x > rink.x + rink.w + goalDepth &&
+        puck.y > goalTop &&
+        puck.y < goalBottom
+    ) {
+        blueScore++;
+        goal("BLUE SCORES!");
+    }
+}
+
+function goal(text) {
+    showMessage(text);
+
+    createParticles(
+        puck.x,
+        puck.y,
+        60
+    );
+
+    beep(440, .2);
+
+    resetPositions();
+}
+
+function showMessage(text) {
+    const el = document.getElementById("message");
+
+    el.textContent = text;
+    el.classList.add("show");
+
+    setTimeout(() => {
+        el.classList.remove("show");
+    }, 1200);
+}
+
+function updatePuck() {
+    puck.x += puck.vx;
+    puck.y += puck.vy;
+
+    puck.vx *= .985;
+    puck.vy *= .985;
+
+    puck.spin += Math.hypot(puck.vx, puck.vy) * .03;
+
+    const top = rink.y + puck.radius;
+    const bottom = rink.y + rink.h - puck.radius;
+
+    if (puck.y < top) {
+        puck.y = top;
+        puck.vy *= -.85;
+    }
+
+    if (puck.y > bottom) {
+        puck.y = bottom;
+        puck.vy *= -.85;
+    }
+
+    const goalTop = rink.y + rink.h / 2 - 75;
+    const goalBottom = goalTop + 150;
+
+    if (
+        puck.x < rink.x + puck.radius &&
+        !(puck.y > goalTop && puck.y < goalBottom)
+    ) {
+        puck.x = rink.x + puck.radius;
+        puck.vx *= -.85;
+    }
+
+    if (
+        puck.x > rink.x + rink.w - puck.radius &&
+        !(puck.y > goalTop && puck.y < goalBottom)
+    ) {
+        puck.x = rink.x + rink.w - puck.radius;
+        puck.vx *= -.85;
+    }
+}
+
+function drawRink() {
+    updateRink();
+
+    // ice
+    const gradient = ctx.createLinearGradient(
+        0,
+        rink.y,
+        0,
+        rink.y + rink.h
+    );
+
+    gradient.addColorStop(0, "#e8faff");
+    gradient.addColorStop(.5, "#d7f3fc");
+    gradient.addColorStop(1, "#c9edf8");
+
+    ctx.fillStyle = gradient;
+
+    roundRect(
+        rink.x,
+        rink.y,
+        rink.w,
+        rink.h,
+        rink.radius
+    );
+
+    ctx.fill();
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    roundRect(
+        rink.x,
+        rink.y,
+        rink.w,
+        rink.h,
+        rink.radius
+    );
+
+    ctx.clip();
+
+    // ice lines
+    ctx.lineWidth = 4;
+
+    ctx.strokeStyle = "rgba(30,80,220,.7)";
+    ctx.beginPath();
+    ctx.moveTo(rink.x + rink.w * .25, rink.y);
+    ctx.lineTo(rink.x + rink.w * .25, rink.y + rink.h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(rink.x + rink.w * .75, rink.y);
+    ctx.lineTo(rink.x + rink.w * .75, rink.y + rink.h);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(220,40,50,.8)";
+    ctx.lineWidth = 5;
+
+    ctx.beginPath();
+    ctx.moveTo(rink.x + rink.w / 2, rink.y);
+    ctx.lineTo(rink.x + rink.w / 2, rink.y + rink.h);
+    ctx.stroke();
+
+    // center circle
+    ctx.beginPath();
+    ctx.arc(
+        rink.x + rink.w / 2,
+        rink.y + rink.h / 2,
+        75,
+        0,
+        Math.PI * 2
+    );
+    ctx.strokeStyle = "rgba(220,40,50,.65)";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    // center dot
+    ctx.beginPath();
+    ctx.arc(
+        rink.x + rink.w / 2,
+        rink.y + rink.h / 2,
+        7,
+        0,
+        Math.PI * 2
+    );
+    ctx.fillStyle = "#d22";
+    ctx.fill();
+
+    // faceoff circles
+    const circles = [
+        [rink.x + rink.w * .25, rink.y + rink.h * .28],
+        [rink.x + rink.w * .25, rink.y + rink.h * .72],
+        [rink.x + rink.w * .75, rink.y + rink.h * .28],
+        [rink.x + rink.w * .75, rink.y + rink.h * .72]
+    ];
+
+    for (const [x, y] of circles) {
+        ctx.beginPath();
+        ctx.arc(x, y, 45, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(220,40,50,.55)";
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = "#d22";
+        ctx.fill();
+    }
+
+    ctx.restore();
+
+    // boards
+    ctx.lineWidth = 7;
+    ctx.strokeStyle = "#ffffff";
+
+    roundRect(
+        rink.x,
+        rink.y,
+        rink.w,
+        rink.h,
+        rink.radius
+    );
+
+    ctx.stroke();
+
+    // goals
+    drawGoal(
+        rink.x - 30,
+        rink.y + rink.h / 2,
+        "left"
+    );
+
+    drawGoal(
+        rink.x + rink.w + 30,
+        rink.y + rink.h / 2,
+        "right"
+    );
+}
+
+function drawGoal(x, y, side) {
+    ctx.save();
+
+    ctx.translate(x, y);
+
+    if (side === "right") {
+        ctx.scale(-1, 1);
+    }
+
+    ctx.strokeStyle = "#d33";
+    ctx.lineWidth = 6;
+
+    ctx.beginPath();
+    ctx.moveTo(0, -75);
+    ctx.lineTo(-25, -55);
+    ctx.lineTo(-25, 55);
+    ctx.lineTo(0, 75);
+    ctx.stroke();
+
+    ctx.strokeStyle = "rgba(180,180,180,.8)";
+    ctx.lineWidth = 2;
+
+    for (let i = -55; i <= 55; i += 15) {
+        ctx.beginPath();
+        ctx.moveTo(-2, i);
+        ctx.lineTo(-25, i * .7);
+        ctx.stroke();
+    }
+
+    ctx.restore();
+}
+
+function drawPuck() {
+    ctx.save();
+
+    ctx.translate(puck.x, puck.y);
+
+    ctx.rotate(puck.spin);
+
+    ctx.beginPath();
+    ctx.ellipse(
+        0,
+        5,
+        puck.radius + 2,
+        puck.radius * .55,
+        0,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "rgba(0,0,0,.2)";
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(
+        0,
+        0,
+        puck.radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "#111";
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function roundRect(x, y, w, h, r) {
+    ctx.beginPath();
+
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+}
+
+let particles = [];
+
+function createParticles(x, y, count) {
+    for (let i = 0; i < count; i++) {
+        particles.push({
+            x,
+            y,
+            vx: (Math.random() - .5) * 7,
+            vy: (Math.random() - .5) * 7,
+            life: 30 + Math.random() * 30,
+            size: 2 + Math.random() * 4
+        });
+    }
+}
+
+function updateParticles() {
+    for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        p.vx *= .96;
+        p.vy *= .96;
+
+        p.life--;
+
+        if (p.life <= 0) {
+            particles.splice(i, 1);
+        }
+    }
+}
+
+function drawParticles() {
+    for (const p of particles) {
+        ctx.globalAlpha = p.life / 60;
+
+        ctx.beginPath();
+        ctx.arc(
+            p.x,
+            p.y,
+            p.size,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+    }
+
+    ctx.globalAlpha = 1;
+}
+
+let audioCtx;
+
+function beep(freq, duration) {
+    try {
+        if (!audioCtx) {
+            audioCtx = new (
+                window.AudioContext ||
+                window.webkitAudioContext
+            )();
+        }
+
+        const oscillator = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        oscillator.frequency.value = freq;
+        oscillator.type = "sine";
+
+        gain.gain.setValueAtTime(
+            .06,
+            audioCtx.currentTime
+        );
+
+        gain.gain.exponentialRampToValueAtTime(
+            .001,
+            audioCtx.currentTime + duration
+        );
+
+        oscillator.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        oscillator.start();
+        oscillator.stop(
+            audioCtx.currentTime + duration
+        );
+    } catch {}
+}
+
+function updateTimer() {
+    if (paused || gameOver) return;
+
+    gameTime -= 1 / 60;
+
+    if (gameTime <= 0) {
+        gameTime = 0;
+        gameOver = true;
+
+        if (blueScore > redScore) {
+            showMessage("BLUE WINS!");
+        } else if (redScore > blueScore) {
+            showMessage("RED WINS!");
+        } else {
+            showMessage("TIE GAME!");
+        }
+    }
+
+    const minutes = Math.floor(gameTime / 60);
+    const seconds = Math.floor(gameTime % 60);
+
+    document.getElementById("timer").textContent =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+}
+
+let timerAccumulator = 0;
+
+function update() {
+    if (!paused && !gameOver) {
+        player.update();
+        enemy.update();
+
+        blueGoalie.update();
+        redGoalie.update();
+
+        updatePuck();
+
+        collideWithPlayer(player);
+        collideWithPlayer(enemy);
+
+        checkPlayerCollision();
+
+        checkGoalie(blueGoalie);
+        checkGoalie(redGoalie);
+
+        checkGoal();
+
+        updateParticles();
+
+        if (mouse.down) {
+            shootMouse();
+        }
+    }
+}
+
+function draw() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+
+    // background
+    const bg = ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        innerHeight
+    );
+
+    bg.addColorStop(0, "#07182b");
+    bg.addColorStop(1, "#0c263d");
+
+    ctx.fillStyle = bg;
+    ctx.fillRect(
+        0,
+        0,
+        innerWidth,
+        innerHeight
+    );
+
+    drawRink();
+
+    drawParticles();
+
+    blueGoalie.draw();
+    redGoalie.draw();
+
+    player.draw();
+    enemy.draw();
+
+    drawPuck();
+
+    // aim line
+    const dist = Math.hypot(
+        puck.x - player.x,
+        puck.y - player.y
+    );
+
+    if (dist < 90) {
+        ctx.beginPath();
+        ctx.moveTo(player.x, player.y);
+        ctx.lineTo(mouse.x, mouse.y);
+
+        ctx.strokeStyle = "rgba(0,100,255,.2)";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+    }
+
+    document.getElementById("blueScore").textContent = blueScore;
+    document.getElementById("redScore").textContent = redScore;
+
+    document.getElementById("shots").textContent = shots;
+    document.getElementById("hits").textContent = hits;
+
+    document.getElementById("speed").textContent =
+        Math.round(Math.hypot(puck.vx, puck.vy));
+}
+
+let last = performance.now();
+
+function loop(now) {
+    const delta = now - last;
+    last = now;
+
+    if (!paused && !gameOver) {
+        timerAccumulator += delta;
+
+        if (timerAccumulator >= 1000) {
+            timerAccumulator -= 1000;
+            updateTimer();
+        }
+    }
+
+    update();
+    draw();
+
+    requestAnimationFrame(loop);
+}
+
+function togglePause() {
+    if (gameOver) return;
+
+    paused = !paused;
+
+    document.getElementById("pause").textContent =
+        paused ? "RESUME" : "PAUSE";
+}
+
+requestAnimationFrame(loop);
+</script>
+
+</body>
+</html>
+```
