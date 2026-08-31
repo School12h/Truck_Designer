@@ -1,234 +1,198 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ultimate Truck Designer</title>
+<title>TruckLab - Advanced Truck Designer</title>
 
 <style>
 *{
     box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-:root{
-    --bg:#090c12;
-    --panel:#111722;
-    --panel2:#171e2b;
-    --border:#2a3445;
-    --text:#f4f7fb;
-    --muted:#9ba7b8;
-    --accent:#2ea8ff;
-    --green:#38d996;
-    --danger:#ff5263;
 }
 
 body{
+    margin:0;
+    background:#080b10;
+    color:#fff;
     font-family:Arial,Helvetica,sans-serif;
-    background:
-        radial-gradient(circle at top,#182235 0,#090c12 55%);
-    color:var(--text);
-    min-height:100vh;
+    overflow-x:hidden;
+}
+
+button,select,input{
+    font:inherit;
+}
+
+button{
+    cursor:pointer;
 }
 
 header{
-    height:72px;
+    height:70px;
     display:flex;
     align-items:center;
     justify-content:space-between;
-    padding:0 25px;
-    background:rgba(10,14,21,.94);
-    border-bottom:1px solid var(--border);
+    padding:0 20px;
+    background:#0d121a;
+    border-bottom:1px solid #283242;
     position:sticky;
     top:0;
     z-index:100;
 }
 
 .logo{
-    font-size:23px;
+    font-size:25px;
     font-weight:900;
-    letter-spacing:1px;
 }
 
 .logo span{
-    color:var(--accent);
+    color:#2da9ff;
 }
 
-.headerButtons{
+.topButtons{
     display:flex;
-    gap:9px;
+    gap:8px;
 }
 
-button{
-    border:1px solid var(--border);
+.topButtons button{
     background:#182131;
-    color:white;
-    border-radius:8px;
-    padding:10px 14px;
-    cursor:pointer;
-    font-weight:700;
-    transition:.18s;
+    color:#fff;
+    border:1px solid #303d50;
+    padding:9px 13px;
+    border-radius:7px;
 }
 
-button:hover{
-    background:#233148;
-    transform:translateY(-1px);
-}
-
-button.primary{
-    background:var(--accent);
-    border-color:var(--accent);
-    color:#03111d;
-}
-
-button.danger{
-    background:#35151c;
-    border-color:#69232f;
+.topButtons button:hover{
+    background:#25344a;
 }
 
 .layout{
     display:grid;
-    grid-template-columns:370px 1fr 310px;
-    min-height:calc(100vh - 72px);
+    grid-template-columns:330px 1fr 300px;
+    height:calc(100vh - 70px);
 }
 
-.sidebar{
-    background:rgba(12,17,26,.92);
-    border-right:1px solid var(--border);
+.panel{
+    background:#0d131c;
     overflow-y:auto;
-    height:calc(100vh - 72px);
-    padding:17px;
+    padding:14px;
 }
 
-.rightbar{
-    border-left:1px solid var(--border);
-    padding:17px;
-    background:rgba(12,17,26,.92);
-    overflow-y:auto;
+.left{
+    border-right:1px solid #293342;
+}
+
+.right{
+    border-left:1px solid #293342;
 }
 
 .section{
-    margin-bottom:15px;
-    border:1px solid var(--border);
-    background:linear-gradient(180deg,#141b28,#101620);
-    border-radius:12px;
+    background:#131b27;
+    border:1px solid #283447;
+    border-radius:10px;
+    margin-bottom:12px;
     overflow:hidden;
 }
 
 .sectionTitle{
-    padding:13px 14px;
-    background:#171f2c;
+    padding:12px;
+    background:#182231;
     font-weight:900;
+    cursor:pointer;
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    cursor:pointer;
 }
 
 .sectionBody{
-    padding:13px;
+    padding:12px;
 }
 
 label{
     display:block;
-    font-size:12px;
-    color:var(--muted);
-    margin-bottom:6px;
-    font-weight:700;
+    font-size:11px;
+    color:#9ba8b8;
+    font-weight:bold;
+    margin-bottom:5px;
     text-transform:uppercase;
 }
 
-select,input[type="range"],input[type="color"]{
-    width:100%;
-}
-
 select{
-    background:#0c121b;
-    border:1px solid #303b4c;
+    width:100%;
+    background:#0b1017;
     color:white;
+    border:1px solid #344154;
+    border-radius:7px;
     padding:10px;
-    border-radius:8px;
     margin-bottom:12px;
 }
 
 input[type="range"]{
-    accent-color:var(--accent);
-    margin:7px 0 14px;
+    width:100%;
+    accent-color:#2da9ff;
+    margin-bottom:14px;
 }
 
 input[type="color"]{
+    width:100%;
     height:42px;
-    border:none;
+    border:0;
     background:none;
-    cursor:pointer;
+    margin-bottom:10px;
 }
 
-.rangeRow{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-}
-
-.value{
-    color:var(--accent);
-    font-weight:900;
-}
-
-.optionGrid{
+.options{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:8px;
+    gap:7px;
 }
 
-.option{
-    border:1px solid var(--border);
-    background:#111823;
-    border-radius:8px;
-    padding:10px;
-    cursor:pointer;
+.opt{
+    padding:10px 7px;
+    text-align:center;
+    border-radius:7px;
+    background:#101722;
+    border:1px solid #2b3748;
     font-size:12px;
-    font-weight:800;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.option:hover{
-    border-color:#55708f;
+.opt:hover{
+    border-color:#5d7898;
 }
 
-.option.active{
-    border-color:var(--accent);
-    box-shadow:0 0 0 1px var(--accent) inset;
-    background:#10263a;
+.opt.active{
+    background:#12304a;
+    border-color:#2da9ff;
 }
 
-.stage{
+.center{
     position:relative;
     overflow:hidden;
-    min-width:0;
     background:
-        linear-gradient(180deg,#182334 0%,#202c3c 47%,#111722 48%,#0b1017 100%);
+        linear-gradient(
+            to bottom,
+            #1d2a3c 0%,
+            #253449 52%,
+            #111821 53%,
+            #080b10 100%
+        );
 }
 
-.stage.night{
+.center.night{
     background:
-        radial-gradient(circle at 80% 15%,#273654 0,#111827 30%,#060910 70%);
-}
-
-.sky{
-    position:absolute;
-    inset:0;
-    pointer-events:none;
+        radial-gradient(circle at 75% 18%,#31415f,#111827 35%,#05070b 75%);
 }
 
 .moon{
     position:absolute;
-    width:75px;
-    height:75px;
-    border-radius:50%;
+    width:70px;
+    height:70px;
     right:12%;
     top:10%;
-    background:#e8eef7;
-    box-shadow:0 0 40px rgba(220,235,255,.45);
+    border-radius:50%;
+    background:#edf2f7;
+    box-shadow:0 0 35px #dce9ff;
     opacity:0;
 }
 
@@ -236,234 +200,290 @@ input[type="color"]{
     opacity:1;
 }
 
-.grid{
+.floor{
     position:absolute;
-    left:0;
-    right:0;
-    bottom:0;
-    height:43%;
+    left:-20%;
+    right:-20%;
+    bottom:-10%;
+    height:48%;
     background:
         linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
         linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
-    background-size:50px 50px;
-    transform:perspective(500px) rotateX(55deg) scale(1.4);
+    background-size:45px 45px;
+    transform:perspective(450px) rotateX(58deg);
     transform-origin:bottom;
-    opacity:.55;
 }
 
-.stageTop{
+.centerTop{
     position:absolute;
     top:18px;
     left:20px;
     right:20px;
     display:flex;
     justify-content:space-between;
-    z-index:5;
+    z-index:20;
 }
 
 .badge{
-    padding:9px 13px;
-    background:rgba(9,13,20,.7);
-    border:1px solid var(--border);
-    border-radius:9px;
+    background:rgba(5,8,12,.7);
+    border:1px solid #354357;
+    padding:10px 14px;
+    border-radius:8px;
+    font-weight:900;
     backdrop-filter:blur(8px);
-    font-weight:800;
 }
 
-.truckArea{
+.truckWrap{
     position:absolute;
+    width:850px;
+    height:450px;
+    max-width:100%;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    width:min(800px,90%);
-    height:430px;
 }
 
 .truck{
     position:absolute;
     width:760px;
-    height:300px;
+    height:330px;
     left:50%;
     top:50%;
-    transform:translate(-50%,-45%);
-    filter:drop-shadow(0 30px 25px rgba(0,0,0,.55));
-    transition:.3s;
+    transform:translate(-50%,-50%);
+    transition:.25s;
+    --paint:#263746;
+    --window:#162331;
+    --rim:#c3cad0;
 }
 
 .truck:hover{
-    transform:translate(-50%,-45%) scale(1.02);
+    transform:translate(-50%,-50%) scale(1.015);
 }
+
+/* MAIN BODY */
 
 .body{
     position:absolute;
-    left:145px;
-    top:110px;
-    width:510px;
-    height:110px;
-    background:var(--truckColor,#222);
-    border-radius:15px 30px 18px 12px;
+    left:125px;
+    top:135px;
+    width:535px;
+    height:100px;
+    background:var(--paint);
+    border-radius:12px 28px 15px 10px;
     box-shadow:
-        inset 0 8px rgba(255,255,255,.1),
-        inset 0 -12px rgba(0,0,0,.2);
-}
-
-.body:after{
-    content:"";
-    position:absolute;
-    left:0;
-    bottom:13px;
-    width:100%;
-    height:7px;
-    background:rgba(0,0,0,.3);
-}
-
-.cab{
-    position:absolute;
-    left:265px;
-    top:37px;
-    width:290px;
-    height:140px;
-    background:var(--truckColor,#222);
-    border-radius:30px 35px 10px 10px;
-    box-shadow:inset 0 9px rgba(255,255,255,.1);
-}
-
-.windshield{
-    position:absolute;
-    left:32px;
-    top:17px;
-    width:145px;
-    height:62px;
-    background:var(--window,#202d3d);
-    border-radius:12px 8px 5px 5px;
-    transform:skew(-9deg);
-    border:3px solid rgba(0,0,0,.4);
-}
-
-.sideWindow{
-    position:absolute;
-    right:22px;
-    top:18px;
-    width:88px;
-    height:57px;
-    background:var(--window,#202d3d);
-    border-radius:6px;
-    border:3px solid rgba(0,0,0,.4);
-}
-
-.windowLine{
-    position:absolute;
-    left:153px;
-    top:17px;
-    height:62px;
-    width:5px;
-    background:#080b10;
-    transform:skew(-9deg);
-}
-
-.hood{
-    position:absolute;
-    left:30px;
-    top:103px;
-    width:260px;
-    height:72px;
-    background:var(--truckColor,#222);
-    border-radius:25px 7px 7px 8px;
-    box-shadow:inset 0 8px rgba(255,255,255,.09);
-}
-
-.grille{
-    position:absolute;
-    left:2px;
-    top:112px;
-    width:45px;
-    height:60px;
-    border-radius:8px 4px 4px 8px;
-    background:var(--grille,#171b20);
-    border:3px solid #0b0e12;
-    overflow:hidden;
-}
-
-.grilleLine{
-    height:6px;
-    margin:5px 3px;
-    background:#7e8997;
-    opacity:.7;
-}
-
-.bumper{
-    position:absolute;
-    left:-10px;
-    top:171px;
-    width:78px;
-    height:18px;
-    border-radius:7px;
-    background:#aeb8c3;
-    box-shadow:inset 0 -5px #68727d;
-}
-
-.bumper.black{
-    background:#15191e;
-    box-shadow:inset 0 -5px #080a0d;
+        inset 0 8px rgba(255,255,255,.10),
+        inset 0 -12px rgba(0,0,0,.25);
+    transition:.25s;
 }
 
 .bed{
     position:absolute;
-    right:8px;
-    top:84px;
-    width:300px;
-    height:112px;
-    background:var(--truckColor,#222);
-    border-radius:6px 20px 12px 6px;
-    box-shadow:inset 0 8px rgba(255,255,255,.06);
+    right:5px;
+    top:103px;
+    width:315px;
+    height:120px;
+    background:var(--paint);
+    border-radius:5px 20px 12px 5px;
+    box-shadow:inset 0 7px rgba(255,255,255,.07);
 }
 
 .bedTop{
     position:absolute;
-    top:-12px;
-    left:0;
-    width:290px;
-    height:15px;
-    background:#10151c;
+    right:10px;
+    top:94px;
+    width:305px;
+    height:14px;
+    background:#0b1015;
     border-radius:5px;
 }
 
 .tailgate{
     position:absolute;
-    right:-5px;
-    top:91px;
-    width:16px;
-    height:102px;
-    background:var(--truckColor,#222);
+    right:0;
+    top:105px;
+    width:18px;
+    height:118px;
+    background:var(--paint);
     border-radius:0 10px 10px 0;
 }
+
+/* CAB */
+
+.cab{
+    position:absolute;
+    left:260px;
+    top:47px;
+    width:305px;
+    height:145px;
+    background:var(--paint);
+    border-radius:27px 35px 10px 10px;
+    box-shadow:inset 0 8px rgba(255,255,255,.08);
+    transition:.25s;
+}
+
+.windshield{
+    position:absolute;
+    left:28px;
+    top:18px;
+    width:150px;
+    height:65px;
+    background:var(--window);
+    border:3px solid #090d12;
+    border-radius:12px 6px 5px 5px;
+    transform:skew(-9deg);
+}
+
+.sideWindow{
+    position:absolute;
+    right:20px;
+    top:19px;
+    width:92px;
+    height:62px;
+    background:var(--window);
+    border:3px solid #090d12;
+    border-radius:6px;
+}
+
+.windowDivider{
+    position:absolute;
+    width:5px;
+    height:65px;
+    left:153px;
+    top:18px;
+    background:#090d12;
+    transform:skew(-9deg);
+}
+
+/* HOOD */
+
+.hood{
+    position:absolute;
+    left:25px;
+    top:128px;
+    width:270px;
+    height:65px;
+    background:var(--paint);
+    border-radius:24px 8px 8px 7px;
+    box-shadow:inset 0 7px rgba(255,255,255,.08);
+}
+
+/* GRILLE */
+
+.grille{
+    position:absolute;
+    left:2px;
+    top:136px;
+    width:53px;
+    height:65px;
+    border-radius:7px 4px 4px 7px;
+    background:#151b22;
+    border:3px solid #07090c;
+    z-index:4;
+    transition:.25s;
+}
+
+.grilleLine{
+    height:5px;
+    margin:6px 3px;
+    background:#7e8995;
+}
+
+.grille.big{
+    width:60px;
+}
+
+.grille.black{
+    background:#030405;
+}
+
+.grille.chrome{
+    background:#aeb7c0;
+}
+
+.grille.mesh{
+    background:
+        repeating-linear-gradient(
+            45deg,
+            #111 0,
+            #111 3px,
+            #444 3px,
+            #444 6px
+        );
+}
+
+/* LIGHTS */
+
+.headlight{
+    position:absolute;
+    left:49px;
+    top:145px;
+    width:15px;
+    height:25px;
+    background:#fff5c4;
+    border-radius:4px;
+    box-shadow:0 0 18px #fff1a4;
+    z-index:8;
+}
+
+.headlight2{
+    position:absolute;
+    left:68px;
+    top:145px;
+    width:6px;
+    height:25px;
+    background:#fff;
+    display:none;
+}
+
+/* BUMPER */
+
+.bumper{
+    position:absolute;
+    left:-12px;
+    top:194px;
+    width:84px;
+    height:20px;
+    background:#aeb8c1;
+    border-radius:7px;
+    box-shadow:inset 0 -5px #68727d;
+    z-index:5;
+}
+
+.bumper.black{
+    background:#11161c;
+    box-shadow:inset 0 -5px #050608;
+}
+
+/* WHEELS */
 
 .wheel{
     position:absolute;
     width:92px;
     height:92px;
     border-radius:50%;
-    background:#080a0d;
-    border:8px solid #151a20;
-    box-shadow:0 0 0 3px #050607, inset 0 0 0 9px #252b32;
-    z-index:10;
-    transition:.2s;
+    background:#07090c;
+    border:8px solid #171c22;
+    box-shadow:
+        0 0 0 3px #040506,
+        inset 0 0 0 7px #292f36;
+    z-index:12;
+    transition:.25s;
 }
 
-.wheel:before{
+.wheel::before{
     content:"";
     position:absolute;
     left:50%;
     top:50%;
     transform:translate(-50%,-50%);
-    width:36px;
-    height:36px;
+    width:39px;
+    height:39px;
     border-radius:50%;
-    background:var(--rim,#aeb8c2);
-    box-shadow:inset 0 0 0 6px #616a73;
+    background:var(--rim);
+    box-shadow:inset 0 0 0 6px #626a72;
 }
 
-.wheel:after{
+.wheel::after{
     content:"";
     position:absolute;
     left:50%;
@@ -472,103 +492,73 @@ input[type="color"]{
     width:10px;
     height:10px;
     border-radius:50%;
-    background:#242a30;
+    background:#1a1f24;
 }
 
 .frontWheel{
-    left:88px;
-    top:180px;
+    left:73px;
+    top:192px;
 }
 
 .rearWheel{
-    right:70px;
-    top:180px;
+    right:62px;
+    top:192px;
 }
 
-.wheel.dual{
-    width:84px;
-    height:84px;
+.dual .rearWheel{
+    right:40px;
 }
 
-.dual.rearWheel{
-    right:43px;
-}
+/* MIRRORS */
 
-.lift-low .wheel{
-    top:200px;
-}
-
-.lift-mid .wheel{
-    top:216px;
-}
-
-.lift-high .wheel{
-    top:232px;
-}
-
-.lift-low .body,
-.lift-low .cab,
-.lift-low .hood,
-.lift-low .bed{
-    transform:translateY(-4px);
-}
-
-.lift-mid .body,
-.lift-mid .cab,
-.lift-mid .hood,
-.lift-mid .bed{
-    transform:translateY(-12px);
-}
-
-.lift-high .body,
-.lift-high .cab,
-.lift-high .hood,
-.lift-high .bed{
-    transform:translateY(-21px);
-}
-
-.lights{
+.mirror{
     position:absolute;
-    left:43px;
-    top:127px;
-    width:18px;
-    height:24px;
-    background:#fff4ba;
+    left:243px;
+    top:100px;
+    width:24px;
+    height:43px;
+    background:#11161c;
+    border-radius:5px;
+}
+
+.mirror.right{
+    left:554px;
+}
+
+/* STEP */
+
+.step{
+    position:absolute;
+    left:350px;
+    top:224px;
+    width:120px;
+    height:12px;
+    background:#10151b;
     border-radius:4px;
-    box-shadow:0 0 18px rgba(255,242,174,.9);
-    z-index:8;
 }
 
-.led{
-    position:absolute;
-    bottom:9px;
-    left:20px;
-    right:20px;
-    height:4px;
-    background:var(--led,#fff);
-    box-shadow:0 0 10px var(--led,#fff);
-}
+/* EXHAUST */
 
 .exhaust{
-    position:absolute;
-    right:25px;
-    top:35px;
-    width:20px;
-    height:90px;
-    background:#161a20;
-    border-radius:6px 6px 3px 3px;
-    transform:rotate(2deg);
     display:none;
+    position:absolute;
+    right:20px;
+    top:30px;
+    width:21px;
+    height:94px;
+    background:#171c22;
+    border-radius:5px;
+    z-index:2;
 }
 
-.exhaust:before{
+.exhaust::before{
     content:"";
     position:absolute;
-    top:-13px;
+    top:-12px;
     left:-3px;
-    width:26px;
+    width:27px;
     height:15px;
-    background:#454d56;
+    background:#4b545e;
     border-radius:50%;
 }
 
@@ -576,118 +566,218 @@ input[type="color"]{
     display:block;
 }
 
-.step{
-    position:absolute;
-    left:370px;
-    top:210px;
-    width:100px;
-    height:13px;
-    background:#151a20;
-    border-radius:5px;
-}
+/* BRUSH BAR */
 
-.mirror{
-    position:absolute;
-    left:250px;
-    top:96px;
-    width:22px;
-    height:40px;
-    background:#151a20;
-    border-radius:5px;
-}
-
-.mirror.right{
-    left:548px;
-}
-
-.frontBar{
-    position:absolute;
-    left:-32px;
-    top:110px;
-    width:34px;
-    height:88px;
-    border:7px solid #1a1e24;
-    border-right:none;
-    border-radius:20px 0 0 20px;
+.brushBar{
     display:none;
+    position:absolute;
+    left:-27px;
+    top:120px;
+    width:48px;
+    height:95px;
+    border:8px solid #151a20;
+    border-right:0;
+    border-radius:30px 0 0 30px;
+    z-index:15;
 }
 
-.frontBar.show{
+.brushBar.show{
     display:block;
 }
 
-.statsTitle{
+/* BRANDING */
+
+.brand{
+    position:absolute;
+    left:175px;
+    top:163px;
+    font-weight:900;
+    font-size:18px;
+    letter-spacing:2px;
+    color:rgba(255,255,255,.8);
+    z-index:7;
+}
+
+.modelBadge{
+    position:absolute;
+    right:80px;
+    top:147px;
+    font-size:11px;
+    font-weight:900;
+    color:rgba(255,255,255,.7);
+}
+
+/* LIFT */
+
+.lift1 .body,
+.lift1 .cab,
+.lift1 .hood,
+.lift1 .bed{
+    transform:translateY(-6px);
+}
+
+.lift1 .wheel{
+    top:204px;
+}
+
+.lift2 .body,
+.lift2 .cab,
+.lift2 .hood,
+.lift2 .bed{
+    transform:translateY(-14px);
+}
+
+.lift2 .wheel{
+    top:220px;
+}
+
+.lift3 .body,
+.lift3 .cab,
+.lift3 .hood,
+.lift3 .bed{
+    transform:translateY(-23px);
+}
+
+.lift3 .wheel{
+    top:238px;
+}
+
+/* BRAND SHAPES */
+
+.truck.ram .cab{
+    border-radius:32px 42px 9px 9px;
+}
+
+.truck.ram .hood{
+    border-radius:28px 8px 8px 7px;
+}
+
+.truck.chevy .cab{
+    border-radius:21px 27px 10px 10px;
+}
+
+.truck.chevy .hood{
+    border-radius:18px 5px 6px 6px;
+}
+
+.truck.ford .cab{
+    border-radius:17px 30px 8px 8px;
+}
+
+.truck.ford .hood{
+    border-radius:13px 5px 6px 6px;
+}
+
+.truck.ford .grille{
+    width:65px;
+    height:70px;
+    top:133px;
+}
+
+.truck.chevy .grille{
+    width:62px;
+    height:61px;
+}
+
+.truck.ram .grille{
+    width:56px;
+    height:68px;
+}
+
+/* RIGHT SIDE */
+
+.statTitle{
     font-size:18px;
     font-weight:900;
     margin-bottom:14px;
 }
 
-.stat{
-    margin-bottom:14px;
+.price{
+    font-size:32px;
+    font-weight:900;
+    margin-bottom:15px;
 }
 
-.statHeader{
+.summary{
+    font-size:13px;
+    line-height:1.8;
+    color:#aeb8c5;
+}
+
+.summary b{
+    color:white;
+}
+
+.stat{
+    margin:15px 0;
+}
+
+.statTop{
     display:flex;
     justify-content:space-between;
-    margin-bottom:6px;
     font-size:13px;
+    margin-bottom:5px;
 }
 
 .bar{
     height:8px;
-    background:#080c12;
+    background:#080b10;
     border-radius:20px;
     overflow:hidden;
 }
 
-.barFill{
+.fill{
     height:100%;
+    background:#2da9ff;
     width:50%;
-    background:var(--accent);
     border-radius:20px;
-    transition:.3s;
+    transition:.25s;
 }
 
-.price{
-    font-size:31px;
-    font-weight:900;
-    margin:12px 0;
-}
-
-.summary{
-    color:var(--muted);
-    line-height:1.7;
-    font-size:13px;
-}
-
-.summary strong{
-    color:white;
-}
-
-.actionGrid{
+.actions{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:8px;
-    margin-top:14px;
+    gap:7px;
 }
 
-.full{
+.actions button,
+.fullButton{
+    border:1px solid #303d50;
+    background:#182131;
+    color:#fff;
+    padding:10px;
+    border-radius:7px;
+    font-weight:bold;
+}
+
+.fullButton{
     width:100%;
+    margin-top:8px;
+}
+
+.primary{
+    background:#2da9ff !important;
+    color:#03111b !important;
+    border-color:#2da9ff !important;
+}
+
+.danger{
+    background:#32151a !important;
+    border-color:#65252e !important;
 }
 
 .toast{
     position:fixed;
-    right:22px;
-    bottom:22px;
-    background:#172231;
-    border:1px solid #334359;
-    padding:13px 17px;
-    border-radius:9px;
+    right:20px;
+    bottom:20px;
+    padding:12px 17px;
+    background:#172131;
+    border:1px solid #344257;
+    border-radius:8px;
     opacity:0;
-    pointer-events:none;
     transform:translateY(10px);
     transition:.25s;
-    z-index:999;
+    z-index:500;
 }
 
 .toast.show{
@@ -697,46 +787,46 @@ input[type="color"]{
 
 @media(max-width:1100px){
     .layout{
-        grid-template-columns:320px 1fr;
+        grid-template-columns:300px 1fr;
     }
 
-    .rightbar{
-        grid-column:1 / -1;
+    .right{
+        grid-column:1/-1;
         border-left:0;
-        border-top:1px solid var(--border);
+        border-top:1px solid #293342;
         height:auto;
     }
 }
 
 @media(max-width:750px){
     header{
-        padding:0 12px;
+        height:auto;
+        min-height:65px;
+        flex-wrap:wrap;
+        gap:7px;
+        padding:10px;
     }
 
-    .headerButtons button:nth-child(1),
-    .headerButtons button:nth-child(2){
+    .topButtons button:nth-child(1),
+    .topButtons button:nth-child(2){
         display:none;
     }
 
     .layout{
         display:block;
-    }
-
-    .sidebar,
-    .rightbar{
         height:auto;
     }
 
-    .stage{
-        height:600px;
+    .center{
+        height:560px;
     }
 
     .truck{
-        transform:translate(-50%,-45%) scale(.72);
+        transform:translate(-50%,-50%) scale(.68);
     }
 
     .truck:hover{
-        transform:translate(-50%,-45%) scale(.75);
+        transform:translate(-50%,-50%) scale(.69);
     }
 }
 </style>
@@ -745,267 +835,358 @@ input[type="color"]{
 <body>
 
 <header>
-    <div class="logo">TRUCK<span>LAB</span> <small>PRO</small></div>
 
-    <div class="headerButtons">
-        <button onclick="randomBuild()">🎲 Random</button>
-        <button onclick="preset('workhorse')">Workhorse</button>
-        <button onclick="preset('offroad')">Off-Road</button>
-        <button class="primary" onclick="saveBuild()">💾 Save</button>
-    </div>
+<div class="logo">
+    TRUCK<span>LAB</span>
+</div>
+
+<div class="topButtons">
+    <button onclick="randomBuild()">🎲 Random</button>
+    <button onclick="nightMode()">🌙</button>
+    <button onclick="saveBuild()">💾 Save</button>
+</div>
+
 </header>
 
 <div class="layout">
 
-<aside class="sidebar">
+<!-- LEFT PANEL -->
+
+<aside class="panel left">
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Truck Platform <span>−</span></div>
-    <div class="sectionBody">
 
-        <label>Manufacturer</label>
-        <select id="make" onchange="updateTruck()">
-            <option>Ram / Cummins</option>
-            <option>Chevrolet</option>
-            <option>Ford</option>
-        </select>
+<div class="sectionTitle" onclick="collapse(this)">
+Truck
+<span>−</span>
+</div>
 
-        <label>Model</label>
-        <select id="model" onchange="calculate()">
-            <option>2500 Heavy Duty</option>
-            <option>3500 Heavy Duty</option>
-            <option>1500</option>
-        </select>
+<div class="sectionBody">
 
-        <label>Cab</label>
-        <select id="cab" onchange="calculate()">
-            <option>Regular Cab</option>
-            <option>Extended Cab</option>
-            <option selected>Crew Cab</option>
-            <option>Mega Cab</option>
-        </select>
+<label>Manufacturer</label>
 
-        <label>Bed</label>
-        <select id="bedSelect" onchange="calculate()">
-            <option>Short Bed</option>
-            <option selected>Standard Bed</option>
-            <option>Long Bed</option>
-        </select>
+<select id="make" onchange="manufacturerChanged()">
+<option value="ram">Ram / Cummins</option>
+<option value="chevy">Chevrolet</option>
+<option value="ford">Ford</option>
+</select>
 
-    </div>
+<label>Model</label>
+
+<select id="model" onchange="update()">
+<option>2500 Heavy Duty</option>
+<option>3500 Heavy Duty</option>
+<option>1500</option>
+</select>
+
+<label>Cab</label>
+
+<select id="cab" onchange="update()">
+<option>Regular Cab</option>
+<option>Extended Cab</option>
+<option selected>Crew Cab</option>
+<option>Mega Cab</option>
+</select>
+
+<label>Bed</label>
+
+<select id="bed" onchange="update()">
+<option>Short Bed</option>
+<option selected>Standard Bed</option>
+<option>Long Bed</option>
+</select>
+
+</div>
 </div>
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Engine <span>−</span></div>
-    <div class="sectionBody">
 
-        <label>Engine</label>
-        <select id="engine" onchange="calculate()">
-            <option value="0">Base Gas V8</option>
-            <option value="7000">6.7L Turbo Diesel</option>
-            <option value="9500">6.6L Duramax Diesel</option>
-            <option value="9000">6.7L Power Stroke Diesel</option>
-            <option value="15000">High Output Diesel</option>
-        </select>
+<div class="sectionTitle" onclick="collapse(this)">
+Engine
+<span>−</span>
+</div>
 
-        <label>Engine Tune</label>
-        <select id="tune" onchange="calculate()">
-            <option value="0">Factory</option>
-            <option value="1500">Street Tune</option>
-            <option value="3000">Tow Tune</option>
-            <option value="5000">Performance Tune</option>
-        </select>
+<div class="sectionBody">
 
-        <label>Transmission</label>
-        <select id="transmission" onchange="calculate()">
-            <option value="0">Automatic</option>
-            <option value="2500">Heavy-Duty Automatic</option>
-            <option value="4000">Built Performance Automatic</option>
-            <option value="1800">Manual</option>
-        </select>
+<label>Engine</label>
 
-    </div>
+<select id="engine" onchange="update()">
+
+<option value="gas">6.4L Gas V8</option>
+<option value="cummins">6.7L Cummins Turbo Diesel</option>
+<option value="duramax">6.6L Duramax Diesel</option>
+<option value="powerstroke">6.7L Power Stroke</option>
+<option value="race">High Output Diesel</option>
+
+</select>
+
+<label>Tune</label>
+
+<select id="tune" onchange="update()">
+<option value="0">Factory</option>
+<option value="1">Tow Tune</option>
+<option value="2">Street Tune</option>
+<option value="3">Performance Tune</option>
+</select>
+
+<label>Transmission</label>
+
+<select id="transmission" onchange="update()">
+<option value="0">Automatic</option>
+<option value="1">Heavy Duty Automatic</option>
+<option value="2">Built Automatic</option>
+<option value="3">Manual</option>
+</select>
+
+</div>
 </div>
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Suspension <span>−</span></div>
-    <div class="sectionBody">
 
-        <label>Lift</label>
-        <div class="rangeRow">
-            <span>Stock</span>
-            <span class="value" id="liftValue">0"</span>
-        </div>
+<div class="sectionTitle" onclick="collapse(this)">
+Suspension
+<span>−</span>
+</div>
 
-        <input id="lift" type="range" min="0" max="12" value="0"
-               oninput="changeLift()">
+<div class="sectionBody">
 
-        <label>Suspension</label>
-        <select id="suspension" onchange="calculate()">
-            <option value="0">Factory Suspension</option>
-            <option value="1200">Heavy Duty Springs</option>
-            <option value="2500">Off-Road Coilover System</option>
-            <option value="5000">Competition Suspension</option>
-        </select>
+<label>Lift Height</label>
 
-    </div>
+<div style="display:flex;justify-content:space-between">
+<span>Stock</span>
+<b id="liftText">0"</b>
+<span>12"</span>
+</div>
+
+<input
+id="lift"
+type="range"
+min="0"
+max="12"
+value="0"
+oninput="changeLift()"
+>
+
+<label>Suspension</label>
+
+<select id="suspension" onchange="update()">
+<option value="0">Factory</option>
+<option value="1">Heavy Duty</option>
+<option value="2">Off-Road</option>
+<option value="3">Competition</option>
+</select>
+
+</div>
 </div>
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Wheels & Tires <span>−</span></div>
-    <div class="sectionBody">
 
-        <label>Wheel Size</label>
-        <div class="rangeRow">
-            <span>17"</span>
-            <span class="value" id="wheelValue">20"</span>
-            <span>26"</span>
-        </div>
+<div class="sectionTitle" onclick="collapse(this)">
+Wheels & Tires
+<span>−</span>
+</div>
 
-        <input id="wheelSize" type="range" min="17" max="26" value="20"
-               oninput="changeWheels()">
+<div class="sectionBody">
 
-        <label>Tire Type</label>
-        <select id="tire" onchange="calculate()">
-            <option value="0">All-Season</option>
-            <option value="900">All-Terrain</option>
-            <option value="1400">Mud-Terrain</option>
-            <option value="2200">Extreme Off-Road</option>
-        </select>
+<label>Wheel Size</label>
 
-        <label>Wheel Style</label>
-        <div class="optionGrid">
-            <div class="option active" onclick="setWheel(this,'chrome')">Chrome</div>
-            <div class="option" onclick="setWheel(this,'black')">Black</div>
-            <div class="option" onclick="setWheel(this,'bronze')">Bronze</div>
-            <div class="option" onclick="setWheel(this,'silver')">Machined</div>
-        </div>
+<div style="display:flex;justify-content:space-between">
+<span>17"</span>
+<b id="wheelText">20"</b>
+<span>26"</span>
+</div>
 
-    </div>
+<input
+id="wheelSize"
+type="range"
+min="17"
+max="26"
+value="20"
+oninput="changeWheels()"
+>
+
+<label>Tires</label>
+
+<select id="tires" onchange="update()">
+<option value="0">All Season</option>
+<option value="1">All Terrain</option>
+<option value="2">Mud Terrain</option>
+<option value="3">Extreme Off-Road</option>
+</select>
+
+<label>Wheel Finish</label>
+
+<div class="options">
+
+<div class="opt active" onclick="wheelFinish(this,'chrome')">Chrome</div>
+<div class="opt" onclick="wheelFinish(this,'black')">Black</div>
+<div class="opt" onclick="wheelFinish(this,'bronze')">Bronze</div>
+<div class="opt" onclick="wheelFinish(this,'silver')">Machined</div>
+
+</div>
+
+</div>
 </div>
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Exterior <span>−</span></div>
-    <div class="sectionBody">
 
-        <label>Paint</label>
-        <input id="paint" type="color" value="#24384b" oninput="changePaint()">
+<div class="sectionTitle" onclick="collapse(this)">
+Paint & Exterior
+<span>−</span>
+</div>
 
-        <label>Window Tint</label>
-        <input id="tint" type="range" min="0" max="100" value="55"
-               oninput="changeTint()">
+<div class="sectionBody">
 
-        <label>Grille</label>
-        <select id="grille" onchange="changeGrille()">
-            <option>Factory</option>
-            <option>Blackout</option>
-            <option>Chrome</option>
-            <option>Mesh</option>
-        </select>
+<label>Paint</label>
 
-        <label>Front Bumper</label>
-        <div class="optionGrid">
-            <div class="option active" onclick="setBumper(this,false)">Factory</div>
-            <div class="option" onclick="setBumper(this,true)">Heavy Duty</div>
-        </div>
+<input
+id="paint"
+type="color"
+value="#263746"
+oninput="changePaint()"
+>
 
-        <label style="margin-top:12px;">LED Color</label>
-        <input id="led" type="color" value="#ffffff" oninput="changeLED()">
+<label>Window Tint</label>
 
-    </div>
+<input
+id="tint"
+type="range"
+min="0"
+max="100"
+value="55"
+oninput="changeTint()"
+>
+
+<label>Grille</label>
+
+<div class="options">
+
+<div class="opt active" onclick="grille(this,'factory')">Factory</div>
+<div class="opt" onclick="grille(this,'black')">Blackout</div>
+<div class="opt" onclick="grille(this,'chrome')">Chrome</div>
+<div class="opt" onclick="grille(this,'mesh')">Mesh</div>
+
+</div>
+
+<br>
+
+<label>Bumper</label>
+
+<div class="options">
+
+<div class="opt active" onclick="bumper(this,false)">Factory</div>
+<div class="opt" onclick="bumper(this,true)">Heavy Duty</div>
+
+</div>
+
+</div>
 </div>
 
 <div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Accessories <span>−</span></div>
-    <div class="sectionBody">
 
-        <div class="optionGrid">
-            <div class="option" onclick="toggleAccessory(this,'exhaust')">💨 Exhaust</div>
-            <div class="option" onclick="toggleAccessory(this,'bar')">🛡️ Brush Bar</div>
-            <div class="option" onclick="toggleAccessory(this,'step')">▰ Side Steps</div>
-            <div class="option" onclick="toggleAccessory(this,'led')">💡 LED Kit</div>
-        </div>
-
-    </div>
+<div class="sectionTitle" onclick="collapse(this)">
+Accessories
+<span>−</span>
 </div>
 
-<div class="section">
-    <div class="sectionTitle" onclick="toggle(this)">Interior <span>−</span></div>
-    <div class="sectionBody">
+<div class="sectionBody">
 
-        <label>Interior</label>
-        <select id="interior" onchange="calculate()">
-            <option value="0">Cloth</option>
-            <option value="1200">Premium Cloth</option>
-            <option value="2500">Leather</option>
-            <option value="4500">Luxury Leather</option>
-        </select>
+<div class="options">
 
-        <label>Infotainment</label>
-        <select id="screen" onchange="calculate()">
-            <option value="0">Standard Display</option>
-            <option value="1000">12" Touchscreen</option>
-            <option value="2500">15" Navigation Display</option>
-        </select>
+<div class="opt active" onclick="accessory(this,'step')">
+Side Steps
+</div>
 
-    </div>
+<div class="opt" onclick="accessory(this,'exhaust')">
+Exhaust
+</div>
+
+<div class="opt" onclick="accessory(this,'bar')">
+Brush Bar
+</div>
+
+<div class="opt active" onclick="accessory(this,'led')">
+LED Kit
+</div>
+
+</div>
+
+</div>
 </div>
 
 </aside>
 
-<main class="stage" id="stage">
 
-<div class="sky">
-    <div class="moon"></div>
+<!-- CENTER -->
+
+<main class="center" id="center">
+
+<div class="moon"></div>
+<div class="floor"></div>
+
+<div class="centerTop">
+
+<div class="badge" id="brandBadge">
+RAM / CUMMINS
 </div>
 
-<div class="grid"></div>
+<button onclick="nightMode()">☀️ / 🌙</button>
 
-<div class="stageTop">
-    <div class="badge" id="platformBadge">RAM / CUMMINS</div>
-    <button onclick="toggleNight()">☀️ / 🌙</button>
 </div>
 
-<div class="truckArea">
+<div class="truckWrap">
 
-<div class="truck lift-stock" id="truck">
+<div class="truck ram" id="truck">
 
-    <div class="body"></div>
-    <div class="bed"></div>
-    <div class="bedTop"></div>
-    <div class="tailgate"></div>
+<div class="body"></div>
+<div class="bed"></div>
+<div class="bedTop"></div>
+<div class="tailgate"></div>
 
-    <div class="cab">
-        <div class="windshield"></div>
-        <div class="sideWindow"></div>
-        <div class="windowLine"></div>
-    </div>
+<div class="cab">
 
-    <div class="hood"></div>
+<div class="windshield"></div>
+<div class="sideWindow"></div>
+<div class="windowDivider"></div>
 
-    <div class="grille" id="truckGrille">
-        <div class="grilleLine"></div>
-        <div class="grilleLine"></div>
-        <div class="grilleLine"></div>
-        <div class="grilleLine"></div>
-        <div class="grilleLine"></div>
-    </div>
+</div>
 
-    <div class="bumper" id="truckBumper"></div>
+<div class="hood"></div>
 
-    <div class="lights"></div>
+<div class="grille" id="grille">
 
-    <div class="led"></div>
+<div class="grilleLine"></div>
+<div class="grilleLine"></div>
+<div class="grilleLine"></div>
+<div class="grilleLine"></div>
+<div class="grilleLine"></div>
 
-    <div class="wheel frontWheel"></div>
-    <div class="wheel rearWheel"></div>
+</div>
 
-    <div class="exhaust" id="truckExhaust"></div>
-    <div class="step" id="truckStep"></div>
-    <div class="frontBar" id="truckBar"></div>
+<div class="headlight"></div>
+<div class="headlight2"></div>
 
-    <div class="mirror"></div>
-    <div class="mirror right"></div>
+<div class="bumper" id="bumper"></div>
+
+<div class="wheel frontWheel"></div>
+<div class="wheel rearWheel"></div>
+
+<div class="mirror"></div>
+<div class="mirror right"></div>
+
+<div class="step" id="step"></div>
+
+<div class="exhaust" id="exhaust"></div>
+
+<div class="brushBar" id="brushBar"></div>
+
+<div class="brand" id="brandText">
+CUMMINS
+</div>
+
+<div class="modelBadge" id="modelBadge">
+2500 HD
+</div>
 
 </div>
 
@@ -1013,107 +1194,170 @@ input[type="color"]{
 
 </main>
 
-<aside class="rightbar">
 
-<div class="statsTitle">BUILD SUMMARY</div>
+<!-- RIGHT -->
 
-<div class="section">
-    <div class="sectionBody">
+<aside class="panel right">
 
-        <div class="price" id="price">$58,500</div>
-
-        <div class="summary">
-            <div><strong>Platform:</strong> <span id="sumMake">Ram / Cummins</span></div>
-            <div><strong>Model:</strong> <span id="sumModel">2500 Heavy Duty</span></div>
-            <div><strong>Engine:</strong> <span id="sumEngine">Base Gas V8</span></div>
-            <div><strong>Transmission:</strong> <span id="sumTrans">Automatic</span></div>
-            <div><strong>Lift:</strong> <span id="sumLift">0"</span></div>
-            <div><strong>Wheels:</strong> <span id="sumWheel">20"</span></div>
-        </div>
-
-    </div>
+<div class="statTitle">
+BUILD SUMMARY
 </div>
 
 <div class="section">
-    <div class="sectionBody">
 
-        <div class="stat">
-            <div class="statHeader">
-                <span>Horsepower</span>
-                <strong id="hp">410 HP</strong>
-            </div>
-            <div class="bar"><div class="barFill" id="hpBar"></div></div>
-        </div>
+<div class="sectionBody">
 
-        <div class="stat">
-            <div class="statHeader">
-                <span>Torque</span>
-                <strong id="torque">850 lb-ft</strong>
-            </div>
-            <div class="bar"><div class="barFill" id="torqueBar"></div></div>
-        </div>
-
-        <div class="stat">
-            <div class="statHeader">
-                <span>Towing</span>
-                <strong id="tow">15,000 lb</strong>
-            </div>
-            <div class="bar"><div class="barFill" id="towBar"></div></div>
-        </div>
-
-        <div class="stat">
-            <div class="statHeader">
-                <span>Off-Road</span>
-                <strong id="offroadStat">45 / 100</strong>
-            </div>
-            <div class="bar"><div class="barFill" id="offBar"></div></div>
-        </div>
-
-    </div>
+<div class="price" id="price">
+$58,500
 </div>
 
-<div class="section">
-    <div class="sectionBody">
+<div class="summary">
 
-        <div class="statsTitle" style="font-size:15px;">BUILD ACTIONS</div>
-
-        <div class="actionGrid">
-            <button onclick="preset('workhorse')">Workhorse</button>
-            <button onclick="preset('street')">Street</button>
-            <button onclick="preset('offroad')">Off-Road</button>
-            <button onclick="preset('diesel')">Diesel</button>
-        </div>
-
-        <button class="primary full" style="margin-top:9px;" onclick="exportBuild()">
-            📋 Export Build
-        </button>
-
-        <button class="full" style="margin-top:9px;" onclick="loadBuild()">
-            📂 Load Saved Build
-        </button>
-
-        <button class="danger full" style="margin-top:9px;" onclick="resetBuild()">
-            Reset
-        </button>
-
-    </div>
+<div>
+<b>Truck:</b>
+<span id="summaryTruck">Ram / Cummins</span>
 </div>
 
+<div>
+<b>Model:</b>
+<span id="summaryModel">2500 Heavy Duty</span>
+</div>
+
+<div>
+<b>Engine:</b>
+<span id="summaryEngine">6.4L Gas V8</span>
+</div>
+
+<div>
+<b>Wheels:</b>
+<span id="summaryWheels">20"</span>
+</div>
+
+<div>
+<b>Lift:</b>
+<span id="summaryLift">0"</span>
+</div>
+
+<div>
+<b>Tires:</b>
+<span id="summaryTires">All Season</span>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
 <div class="section">
-    <div class="sectionBody">
 
-        <div class="statsTitle" style="font-size:15px;">ESTIMATED BUILD</div>
+<div class="sectionBody">
 
-        <div class="summary">
-            Base Truck: $58,500<br>
-            Engine & drivetrain: calculated<br>
-            Suspension: calculated<br>
-            Wheels & tires: calculated<br>
-            Exterior: calculated<br>
-            Interior: calculated
-        </div>
+<div class="stat">
 
-    </div>
+<div class="statTop">
+<span>Horsepower</span>
+<b id="hp">405 HP</b>
+</div>
+
+<div class="bar">
+<div class="fill" id="hpBar"></div>
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="statTop">
+<span>Torque</span>
+<b id="torque">430 lb-ft</b>
+</div>
+
+<div class="bar">
+<div class="fill" id="torqueBar"></div>
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="statTop">
+<span>Towing</span>
+<b id="towing">14,000 lb</b>
+</div>
+
+<div class="bar">
+<div class="fill" id="towBar"></div>
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="statTop">
+<span>Off-Road</span>
+<b id="offroad">35 / 100</b>
+</div>
+
+<div class="bar">
+<div class="fill" id="offBar"></div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<div class="section">
+
+<div class="sectionBody">
+
+<div class="statTitle" style="font-size:15px">
+PRESETS
+</div>
+
+<div class="actions">
+
+<button onclick="preset('work')">
+Work Truck
+</button>
+
+<button onclick="preset('street')">
+Street
+</button>
+
+<button onclick="preset('offroad')">
+Off-Road
+</button>
+
+<button onclick="preset('diesel')">
+Diesel
+</button>
+
+</div>
+
+<button class="fullButton primary" onclick="randomBuild()">
+🎲 RANDOM BUILD
+</button>
+
+<button class="fullButton" onclick="saveBuild()">
+💾 SAVE BUILD
+</button>
+
+<button class="fullButton" onclick="loadBuild()">
+📂 LOAD BUILD
+</button>
+
+<button class="fullButton" onclick="exportBuild()">
+📋 EXPORT JSON
+</button>
+
+<button class="fullButton danger" onclick="resetBuild()">
+RESET
+</button>
+
+</div>
 </div>
 
 </aside>
@@ -1122,32 +1366,45 @@ input[type="color"]{
 
 <div class="toast" id="toast"></div>
 
+
 <script>
 
-const basePrice = 58500;
+let wheelStyle = "chrome";
+let night = false;
+let heavyBumper = false;
 
-const state = {
-    wheelStyle:"chrome",
-    bumper:false,
+let accessories = {
+    step:true,
     exhaust:false,
     bar:false,
-    step:true,
-    led:true,
-    night:false
+    led:true
 };
-
-function money(n){
-    return "$" + Math.round(n).toLocaleString();
-}
 
 function $(id){
     return document.getElementById(id);
 }
 
-function toggle(el){
+function toast(message){
 
-    const body = el.nextElementSibling;
-    const arrow = el.querySelector("span");
+    const t = $("toast");
+
+    t.textContent = message;
+    t.classList.add("show");
+
+    clearTimeout(window.toastTimer);
+
+    window.toastTimer = setTimeout(()=>{
+        t.classList.remove("show");
+    },1800);
+}
+
+
+/* COLLAPSE */
+
+function collapse(title){
+
+    const body = title.nextElementSibling;
+    const arrow = title.querySelector("span");
 
     if(body.style.display === "none"){
         body.style.display = "";
@@ -1158,446 +1415,569 @@ function toggle(el){
     }
 }
 
-function showToast(text){
 
-    const toast = $("toast");
+/* MANUFACTURER */
 
-    toast.textContent = text;
-    toast.classList.add("show");
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer = setTimeout(()=>{
-        toast.classList.remove("show");
-    },1800);
-}
-
-function updateTruck(){
+function manufacturerChanged(){
 
     const make = $("make").value;
 
-    $("platformBadge").textContent =
-        make === "Ram / Cummins" ? "RAM / CUMMINS" :
-        make === "Chevrolet" ? "CHEVROLET" :
-        "FORD";
-
     const model = $("model");
 
-    if(make === "Ram / Cummins"){
+    if(make === "ram"){
+
         model.innerHTML = `
-            <option>2500 Heavy Duty</option>
-            <option>3500 Heavy Duty</option>
-            <option>1500</option>
+        <option>2500 Heavy Duty</option>
+        <option>3500 Heavy Duty</option>
+        <option>1500</option>
         `;
+
+        $("brandBadge").textContent = "RAM / CUMMINS";
+
     }
 
-    if(make === "Chevrolet"){
+    if(make === "chevy"){
+
         model.innerHTML = `
-            <option>Silverado 2500HD</option>
-            <option>Silverado 3500HD</option>
-            <option>Silverado 1500</option>
+        <option>Silverado 2500HD</option>
+        <option>Silverado 3500HD</option>
+        <option>Silverado 1500</option>
         `;
+
+        $("brandBadge").textContent = "CHEVROLET";
+
     }
 
-    if(make === "Ford"){
+    if(make === "ford"){
+
         model.innerHTML = `
-            <option>F-250 Super Duty</option>
-            <option>F-350 Super Duty</option>
-            <option>F-150</option>
+        <option>F-250 SUPER DUTY</option>
+        <option>F-350 SUPER DUTY</option>
+        <option>F-150</option>
         `;
+
+        $("brandBadge").textContent = "FORD";
+
     }
+
+    update();
+}
+
+
+/* MAIN UPDATE */
+
+function update(){
+
+    const make = $("make").value;
+    const model = $("model").value;
+
+    const truck = $("truck");
+
+    truck.classList.remove("ram","chevy","ford");
+
+    truck.classList.add(make);
+
+    /* BRAND TEXT */
+
+    if(make === "ram"){
+        $("brandText").textContent = "CUMMINS";
+    }
+
+    if(make === "chevy"){
+        $("brandText").textContent = "DURAMAX";
+    }
+
+    if(make === "ford"){
+        $("brandText").textContent = "POWER STROKE";
+    }
+
+    $("modelBadge").textContent =
+        model
+        .replace(" Heavy Duty"," HD")
+        .replace("Silverado ","")
+        .replace(" SUPER DUTY","");
+
+    $("summaryTruck").textContent =
+        make === "ram" ? "Ram / Cummins" :
+        make === "chevy" ? "Chevrolet" :
+        "Ford";
+
+    $("summaryModel").textContent = model;
+
+    $("summaryEngine").textContent =
+        $("engine").selectedOptions[0].textContent;
+
+    $("summaryWheels").textContent =
+        $("wheelSize").value + '"';
+
+    $("summaryLift").textContent =
+        $("lift").value + '"';
+
+    $("summaryTires").textContent =
+        $("tires").selectedOptions[0].textContent;
 
     calculate();
 }
 
-function calculate(){
 
-    let price = basePrice;
-
-    const engineValue = Number($("engine").value);
-    const tuneValue = Number($("tune").value);
-    const transValue = Number($("transmission").value);
-    const suspensionValue = Number($("suspension").value);
-    const tireValue = Number($("tire").value);
-    const interiorValue = Number($("interior").value);
-    const screenValue = Number($("screen").value);
-
-    price += engineValue;
-    price += tuneValue;
-    price += transValue;
-    price += suspensionValue;
-    price += tireValue;
-    price += interiorValue;
-    price += screenValue;
-
-    const wheelSize = Number($("wheelSize").value);
-
-    price += Math.max(0,wheelSize-17) * 650;
-    price += Number($("lift").value) * 650;
-
-    if(state.exhaust) price += 1800;
-    if(state.bar) price += 1600;
-    if(state.step) price += 700;
-    if(state.led) price += 950;
-    if(state.bumper) price += 2200;
-
-    $("price").textContent = money(price);
-
-    $("sumMake").textContent = $("make").value;
-    $("sumModel").textContent = $("model").value;
-    $("sumEngine").textContent =
-        $("engine").selectedOptions[0].textContent;
-    $("sumTrans").textContent =
-        $("transmission").selectedOptions[0].textContent;
-
-    $("sumLift").textContent = $("lift").value + '"';
-    $("sumWheel").textContent = wheelSize + '"';
-
-    let hp = 405;
-    let torque = 510;
-    let tow = 15000;
-
-    if(engineValue >= 7000){
-        hp = 475;
-        torque = 1050;
-        tow = 19000;
-    }
-
-    if(engineValue >= 9000){
-        hp = 500;
-        torque = 1100;
-        tow = 20500;
-    }
-
-    if(engineValue >= 15000){
-        hp = 650;
-        torque = 1250;
-        tow = 23500;
-    }
-
-    hp += tuneValue / 18;
-    torque += tuneValue / 10;
-
-    const lift = Number($("lift").value);
-
-    let off = 40 + lift * 4;
-
-    if($("tire").selectedOptions[0].textContent.includes("Terrain"))
-        off += 15;
-
-    if($("tire").selectedOptions[0].textContent.includes("Extreme"))
-        off += 25;
-
-    off = Math.min(100,off);
-
-    $("hp").textContent = Math.round(hp) + " HP";
-    $("torque").textContent = Math.round(torque) + " lb-ft";
-    $("tow").textContent = Math.round(tow).toLocaleString() + " lb";
-    $("offroadStat").textContent = Math.round(off) + " / 100";
-
-    $("hpBar").style.width = Math.min(100,hp/7) + "%";
-    $("torqueBar").style.width = Math.min(100,torque/13) + "%";
-    $("towBar").style.width = Math.min(100,tow/250) + "%";
-    $("offBar").style.width = off + "%";
-}
+/* PAINT */
 
 function changePaint(){
 
     $("truck").style.setProperty(
-        "--truckColor",
+        "--paint",
         $("paint").value
     );
 
 }
 
+
+/* WINDOW TINT */
+
 function changeTint(){
 
-    const v = Number($("tint").value);
+    const value = Number($("tint").value);
 
-    const r = Math.max(10,45-v*.3);
+    const shade = Math.max(5,50 - value*.43);
 
     $("truck").style.setProperty(
         "--window",
-        `rgb(${r},${r+8},${r+15})`
-    );
-}
-
-function changeLED(){
-
-    $("truck").style.setProperty(
-        "--led",
-        $("led").value
-    );
-}
-
-function changeGrille(){
-
-    const val = $("grille").value;
-
-    let color = "#171b20";
-
-    if(val === "Blackout")
-        color = "#050607";
-
-    if(val === "Chrome")
-        color = "#aeb7c1";
-
-    if(val === "Mesh")
-        color = "#222831";
-
-    $("truck").style.setProperty("--grille",color);
-}
-
-function changeLift(){
-
-    const lift = Number($("lift").value);
-
-    $("liftValue").textContent = lift + '"';
-
-    $("truck").classList.remove(
-        "lift-stock",
-        "lift-low",
-        "lift-mid",
-        "lift-high"
+        `rgb(${shade},${shade+8},${shade+14})`
     );
 
-    if(lift === 0)
-        $("truck").classList.add("lift-stock");
-
-    else if(lift <= 4)
-        $("truck").classList.add("lift-low");
-
-    else if(lift <= 8)
-        $("truck").classList.add("lift-mid");
-
-    else
-        $("truck").classList.add("lift-high");
-
-    calculate();
 }
+
+
+/* WHEELS */
 
 function changeWheels(){
 
     const size = Number($("wheelSize").value);
 
-    $("wheelValue").textContent = size + '"';
+    $("wheelText").textContent = size + '"';
 
-    const wheelSize = 72 + (size-17)*3;
+    const px = 78 + (size-17)*2.6;
 
-    document.querySelectorAll(".wheel").forEach(w=>{
-        w.style.width = wheelSize + "px";
-        w.style.height = wheelSize + "px";
+    document.querySelectorAll(".wheel").forEach(wheel=>{
+
+        wheel.style.width = px + "px";
+        wheel.style.height = px + "px";
+
     });
 
-    calculate();
+    update();
+
 }
 
-function setWheel(el,type){
 
-    document.querySelectorAll(".option").forEach(o=>{
-        if(o.parentElement === el.parentElement)
-            o.classList.remove("active");
-    });
+/* LIFT */
 
-    el.classList.add("active");
+function changeLift(){
 
-    state.wheelStyle = type;
+    const value = Number($("lift").value);
 
-    let color = "#aeb8c2";
+    $("liftText").textContent =
+        value + '"';
 
-    if(type === "black") color = "#11151a";
-    if(type === "bronze") color = "#8a6541";
-    if(type === "silver") color = "#d5dbe1";
-
-    $("truck").style.setProperty("--rim",color);
-
-    calculate();
-}
-
-function setBumper(el,on){
-
-    el.parentElement.querySelectorAll(".option")
-        .forEach(x=>x.classList.remove("active"));
-
-    el.classList.add("active");
-
-    state.bumper = on;
-
-    $("truckBumper").classList.toggle("black",on);
-
-    calculate();
-}
-
-function toggleAccessory(el,type){
-
-    el.classList.toggle("active");
-
-    state[type] = el.classList.contains("active");
-
-    if(type === "exhaust")
-        $("truckExhaust").classList.toggle("show",state.exhaust);
-
-    if(type === "bar")
-        $("truckBar").classList.toggle("show",state.bar);
-
-    if(type === "step")
-        $("truckStep").style.display =
-            state.step ? "block" : "none";
-
-    if(type === "led")
-        $("truck").querySelector(".led").style.display =
-            state.led ? "block" : "none";
-
-    calculate();
-}
-
-function toggleNight(){
-
-    state.night = !state.night;
-
-    $("stage").classList.toggle("night",state.night);
-}
-
-function getBuild(){
-
-    return {
-        make:$("make").value,
-        model:$("model").value,
-        cab:$("cab").value,
-        bed:$("bedSelect").value,
-        engine:$("engine").value,
-        tune:$("tune").value,
-        transmission:$("transmission").value,
-        suspension:$("suspension").value,
-        tire:$("tire").value,
-        interior:$("interior").value,
-        screen:$("screen").value,
-        paint:$("paint").value,
-        tint:$("tint").value,
-        grille:$("grille").value,
-        led:$("led").value,
-        lift:$("lift").value,
-        wheelSize:$("wheelSize").value,
-        state:{...state}
-    };
-}
-
-function applyBuild(b){
-
-    $("make").value = b.make;
-    updateTruck();
-
-    $("model").value = b.model;
-    $("cab").value = b.cab;
-    $("bedSelect").value = b.bed;
-    $("engine").value = b.engine;
-    $("tune").value = b.tune;
-    $("transmission").value = b.transmission;
-    $("suspension").value = b.suspension;
-    $("tire").value = b.tire;
-    $("interior").value = b.interior;
-    $("screen").value = b.screen;
-    $("paint").value = b.paint;
-    $("tint").value = b.tint;
-    $("grille").value = b.grille;
-    $("led").value = b.led;
-    $("lift").value = b.lift;
-    $("wheelSize").value = b.wheelSize;
-
-    Object.assign(state,b.state || {});
-
-    changePaint();
-    changeTint();
-    changeLED();
-    changeGrille();
-    changeLift();
-    changeWheels();
-
-    $("truckExhaust").classList.toggle("show",state.exhaust);
-    $("truckBar").classList.toggle("show",state.bar);
-    $("truckStep").style.display = state.step ? "block":"none";
-    $("truck").querySelector(".led").style.display =
-        state.led ? "block":"none";
-
-    $("truckBumper").classList.toggle("black",state.bumper);
-
-    calculate();
-}
-
-function saveBuild(){
-
-    localStorage.setItem(
-        "truckLabBuild",
-        JSON.stringify(getBuild())
+    $("truck").classList.remove(
+        "lift1",
+        "lift2",
+        "lift3"
     );
 
-    showToast("Build saved!");
+    if(value >= 1 && value <= 4)
+        $("truck").classList.add("lift1");
+
+    if(value >= 5 && value <= 8)
+        $("truck").classList.add("lift2");
+
+    if(value >= 9)
+        $("truck").classList.add("lift3");
+
+    update();
+
 }
 
-function loadBuild(){
 
-    const saved = localStorage.getItem("truckLabBuild");
+/* WHEEL FINISH */
 
-    if(!saved){
-        showToast("No saved build found");
-        return;
+function wheelFinish(element,type){
+
+    element.parentElement
+        .querySelectorAll(".opt")
+        .forEach(x=>x.classList.remove("active"));
+
+    element.classList.add("active");
+
+    wheelStyle = type;
+
+    let color;
+
+    if(type === "chrome")
+        color = "#d3d9de";
+
+    if(type === "black")
+        color = "#101419";
+
+    if(type === "bronze")
+        color = "#8d6846";
+
+    if(type === "silver")
+        color = "#d9dde0";
+
+    $("truck").style.setProperty(
+        "--rim",
+        color
+    );
+
+    calculate();
+}
+
+
+/* GRILLE */
+
+function grille(element,type){
+
+    element.parentElement
+        .querySelectorAll(".opt")
+        .forEach(x=>x.classList.remove("active"));
+
+    element.classList.add("active");
+
+    const g = $("grille");
+
+    g.classList.remove(
+        "black",
+        "chrome",
+        "mesh"
+    );
+
+    if(type === "black")
+        g.classList.add("black");
+
+    if(type === "chrome")
+        g.classList.add("chrome");
+
+    if(type === "mesh")
+        g.classList.add("mesh");
+
+}
+
+
+/* BUMPER */
+
+function bumper(element,on){
+
+    element.parentElement
+        .querySelectorAll(".opt")
+        .forEach(x=>x.classList.remove("active"));
+
+    element.classList.add("active");
+
+    heavyBumper = on;
+
+    $("bumper").classList.toggle(
+        "black",
+        on
+    );
+
+    calculate();
+}
+
+
+/* ACCESSORIES */
+
+function accessory(element,type){
+
+    element.classList.toggle("active");
+
+    accessories[type] =
+        element.classList.contains("active");
+
+    if(type === "step"){
+        $("step").style.display =
+            accessories.step ? "block":"none";
     }
 
-    applyBuild(JSON.parse(saved));
+    if(type === "exhaust"){
+        $("exhaust").classList.toggle(
+            "show",
+            accessories.exhaust
+        );
+    }
 
-    showToast("Build loaded!");
+    if(type === "bar"){
+        $("brushBar").classList.toggle(
+            "show",
+            accessories.bar
+        );
+    }
+
+    if(type === "led"){
+        $("truck").querySelector(".headlight")
+            .style.boxShadow =
+            accessories.led
+            ? "0 0 25px #fff1a4"
+            : "none";
+    }
+
+    calculate();
 }
 
-function exportBuild(){
 
-    const data = JSON.stringify(getBuild(),null,2);
+/* NIGHT */
 
-    navigator.clipboard.writeText(data)
-        .then(()=>showToast("Build JSON copied!"))
-        .catch(()=>showToast("Copy unavailable"));
+function nightMode(){
+
+    night = !night;
+
+    $("center").classList.toggle(
+        "night",
+        night
+    );
+
 }
 
-function resetBuild(){
 
-    location.reload();
+/* CALCULATE */
+
+function calculate(){
+
+    let price = 58500;
+
+    const make = $("make").value;
+
+    const engine = $("engine").value;
+
+    const tune = Number($("tune").value);
+
+    const transmission =
+        Number($("transmission").value);
+
+    const suspension =
+        Number($("suspension").value);
+
+    const tires =
+        Number($("tires").value);
+
+    const wheel =
+        Number($("wheelSize").value);
+
+    const lift =
+        Number($("lift").value);
+
+    /* ENGINE */
+
+    let hp = 405;
+    let torque = 430;
+    let tow = 14000;
+
+    if(engine === "cummins"){
+
+        price += 9500;
+        hp = 370;
+        torque = 850;
+        tow = 18500;
+
+    }
+
+    if(engine === "duramax"){
+
+        price += 9800;
+        hp = 470;
+        torque = 975;
+        tow = 20000;
+
+    }
+
+    if(engine === "powerstroke"){
+
+        price += 10000;
+        hp = 475;
+        torque = 1050;
+        tow = 21000;
+
+    }
+
+    if(engine === "race"){
+
+        price += 17000;
+        hp = 650;
+        torque = 1250;
+        tow = 24000;
+
+    }
+
+    /* TUNE */
+
+    if(tune === 1){
+
+        price += 1800;
+        hp += 25;
+        torque += 55;
+
+    }
+
+    if(tune === 2){
+
+        price += 2600;
+        hp += 55;
+        torque += 90;
+
+    }
+
+    if(tune === 3){
+
+        price += 4500;
+        hp += 100;
+        torque += 150;
+
+    }
+
+    /* TRANSMISSION */
+
+    if(transmission === 1)
+        price += 2500;
+
+    if(transmission === 2)
+        price += 5000;
+
+    if(transmission === 3)
+        price += 1200;
+
+    /* SUSPENSION */
+
+    if(suspension === 1)
+        price += 1200;
+
+    if(suspension === 2)
+        price += 2800;
+
+    if(suspension === 3)
+        price += 5500;
+
+    /* WHEELS */
+
+    price += (wheel-17)*650;
+
+    /* TIRES */
+
+    if(tires === 1){
+        price += 1000;
+        tow += 300;
+    }
+
+    if(tires === 2){
+        price += 1500;
+        tow += 200;
+    }
+
+    if(tires === 3){
+        price += 2400;
+        tow -= 300;
+    }
+
+    /* LIFT */
+
+    price += lift*650;
+
+    let offroad =
+        35 + lift*4 + tires*12;
+
+    if(suspension === 2)
+        offroad += 12;
+
+    if(suspension === 3)
+        offroad += 18;
+
+    offroad =
+        Math.min(100,offroad);
+
+    /* ACCESSORIES */
+
+    if(accessories.step)
+        price += 700;
+
+    if(accessories.exhaust)
+        price += 1800;
+
+    if(accessories.bar)
+        price += 1700;
+
+    if(accessories.led)
+        price += 900;
+
+    if(heavyBumper)
+        price += 2300;
+
+    $("price").textContent =
+        "$" + Math.round(price).toLocaleString();
+
+    $("hp").textContent =
+        Math.round(hp) + " HP";
+
+    $("torque").textContent =
+        Math.round(torque) + " lb-ft";
+
+    $("towing").textContent =
+        Math.round(tow).toLocaleString() + " lb";
+
+    $("offroad").textContent =
+        Math.round(offroad) + " / 100";
+
+    $("hpBar").style.width =
+        Math.min(100,hp/7) + "%";
+
+    $("torqueBar").style.width =
+        Math.min(100,torque/13) + "%";
+
+    $("towBar").style.width =
+        Math.min(100,tow/250) + "%";
+
+    $("offBar").style.width =
+        offroad + "%";
+
 }
+
+
+/* RANDOM BUILD */
 
 function randomBuild(){
 
-    const random = arr =>
+    const choose = arr =>
         arr[Math.floor(Math.random()*arr.length)];
 
     $("make").value =
-        random(["Ram / Cummins","Chevrolet","Ford"]);
+        choose(["ram","chevy","ford"]);
 
-    updateTruck();
+    manufacturerChanged();
 
     $("model").selectedIndex =
-        Math.floor(Math.random()*$("model").options.length);
+        Math.floor(
+            Math.random() *
+            $("model").options.length
+        );
 
-    $("cab").selectedIndex =
-        Math.floor(Math.random()*$("cab").options.length);
+    $("engine").value =
+        choose([
+            "gas",
+            "cummins",
+            "duramax",
+            "powerstroke",
+            "race"
+        ]);
 
-    $("engine").selectedIndex =
-        Math.floor(Math.random()*$("engine").options.length);
+    $("tune").value =
+        Math.floor(Math.random()*4);
 
-    $("tune").selectedIndex =
-        Math.floor(Math.random()*$("tune").options.length);
+    $("transmission").value =
+        Math.floor(Math.random()*4);
 
-    $("transmission").selectedIndex =
-        Math.floor(Math.random()*$("transmission").options.length);
+    $("suspension").value =
+        Math.floor(Math.random()*4);
 
-    $("suspension").selectedIndex =
-        Math.floor(Math.random()*$("suspension").options.length);
-
-    $("tire").selectedIndex =
-        Math.floor(Math.random()*$("tire").options.length);
-
-    $("interior").selectedIndex =
-        Math.floor(Math.random()*$("interior").options.length);
-
-    $("screen").selectedIndex =
-        Math.floor(Math.random()*$("screen").options.length);
+    $("tires").value =
+        Math.floor(Math.random()*4);
 
     $("lift").value =
         Math.floor(Math.random()*13);
@@ -1606,74 +1986,81 @@ function randomBuild(){
         17 + Math.floor(Math.random()*10);
 
     $("paint").value =
-        "#" + Math.floor(Math.random()*16777215)
-            .toString(16).padStart(6,"0");
+        "#" +
+        Math.floor(
+            Math.random()*16777215
+        ).toString(16)
+        .padStart(6,"0");
 
     changePaint();
     changeLift();
     changeWheels();
 
-    calculate();
+    toast("Random truck generated!");
 
-    showToast("Random truck generated!");
 }
+
+
+/* PRESETS */
 
 function preset(type){
 
-    if(type === "workhorse"){
+    if(type === "work"){
 
-        $("make").value = "Ram / Cummins";
-        updateTruck();
+        $("make").value = "ram";
+        manufacturerChanged();
 
-        $("engine").value = "7000";
-        $("tune").value = "3000";
-        $("lift").value = 2;
-        $("wheelSize").value = 18;
-        $("tire").value = "900";
-        $("suspension").value = "1200";
+        $("engine").value = "cummins";
+        $("tune").value = "1";
+        $("lift").value = "2";
+        $("wheelSize").value = "18";
+        $("tires").value = "1";
+        $("suspension").value = "1";
         $("paint").value = "#1d2732";
-
-    }
-
-    if(type === "offroad"){
-
-        $("make").value = "Ford";
-        updateTruck();
-
-        $("engine").value = "9000";
-        $("tune").value = "5000";
-        $("lift").value = 8;
-        $("wheelSize").value = 22;
-        $("tire").value = "2200";
-        $("suspension").value = "5000";
-        $("paint").value = "#39432e";
 
     }
 
     if(type === "street"){
 
-        $("make").value = "Chevrolet";
-        updateTruck();
+        $("make").value = "chevy";
+        manufacturerChanged();
 
-        $("engine").value = "9500";
-        $("tune").value = "1500";
-        $("lift").value = 4;
-        $("wheelSize").value = 24;
-        $("tire").value = "0";
-        $("paint").value = "#252a31";
+        $("engine").value = "duramax";
+        $("tune").value = "2";
+        $("lift").value = "3";
+        $("wheelSize").value = "24";
+        $("tires").value = "0";
+        $("suspension").value = "1";
+        $("paint").value = "#24282d";
+
+    }
+
+    if(type === "offroad"){
+
+        $("make").value = "ford";
+        manufacturerChanged();
+
+        $("engine").value = "powerstroke";
+        $("tune").value = "3";
+        $("lift").value = "9";
+        $("wheelSize").value = "22";
+        $("tires").value = "3";
+        $("suspension").value = "3";
+        $("paint").value = "#465038";
 
     }
 
     if(type === "diesel"){
 
-        $("make").value = "Ram / Cummins";
-        updateTruck();
+        $("make").value = "ram";
+        manufacturerChanged();
 
-        $("engine").value = "15000";
-        $("tune").value = "5000";
-        $("lift").value = 6;
-        $("wheelSize").value = 20;
-        $("tire").value = "1400";
+        $("engine").value = "race";
+        $("tune").value = "3";
+        $("lift").value = "6";
+        $("wheelSize").value = "20";
+        $("tires").value = "2";
+        $("suspension").value = "2";
         $("paint").value = "#111820";
 
     }
@@ -1682,20 +2069,186 @@ function preset(type){
     changeLift();
     changeWheels();
 
-    calculate();
-
-    showToast(type.toUpperCase() + " preset loaded");
+    toast(
+        type.charAt(0).toUpperCase() +
+        type.slice(1) +
+        " preset loaded"
+    );
 }
+
+
+/* SAVE */
+
+function getBuild(){
+
+    return {
+
+        make:$("make").value,
+        model:$("model").value,
+        cab:$("cab").value,
+        bed:$("bed").value,
+
+        engine:$("engine").value,
+        tune:$("tune").value,
+        transmission:$("transmission").value,
+
+        suspension:$("suspension").value,
+        tires:$("tires").value,
+
+        lift:$("lift").value,
+        wheelSize:$("wheelSize").value,
+
+        paint:$("paint").value,
+        tint:$("tint").value,
+
+        wheelStyle:wheelStyle,
+        heavyBumper:heavyBumper,
+        accessories:{...accessories}
+
+    };
+
+}
+
+
+function saveBuild(){
+
+    localStorage.setItem(
+        "trucklab_build",
+        JSON.stringify(getBuild())
+    );
+
+    toast("Build saved!");
+
+}
+
+
+function loadBuild(){
+
+    const saved =
+        localStorage.getItem(
+            "trucklab_build"
+        );
+
+    if(!saved){
+
+        toast("No saved build found");
+
+        return;
+    }
+
+    const b =
+        JSON.parse(saved);
+
+    $("make").value = b.make;
+
+    manufacturerChanged();
+
+    $("model").value = b.model;
+    $("cab").value = b.cab;
+    $("bed").value = b.bed;
+
+    $("engine").value = b.engine;
+    $("tune").value = b.tune;
+    $("transmission").value =
+        b.transmission;
+
+    $("suspension").value =
+        b.suspension;
+
+    $("tires").value =
+        b.tires;
+
+    $("lift").value =
+        b.lift;
+
+    $("wheelSize").value =
+        b.wheelSize;
+
+    $("paint").value =
+        b.paint;
+
+    $("tint").value =
+        b.tint;
+
+    wheelStyle =
+        b.wheelStyle || "chrome";
+
+    heavyBumper =
+        b.heavyBumper || false;
+
+    accessories =
+        b.accessories || accessories;
+
+    changePaint();
+    changeTint();
+    changeLift();
+    changeWheels();
+    update();
+
+    $("step").style.display =
+        accessories.step ? "block":"none";
+
+    $("exhaust").classList.toggle(
+        "show",
+        accessories.exhaust
+    );
+
+    $("brushBar").classList.toggle(
+        "show",
+        accessories.bar
+    );
+
+    toast("Build loaded!");
+
+}
+
+
+/* EXPORT */
+
+function exportBuild(){
+
+    const data =
+        JSON.stringify(
+            getBuild(),
+            null,
+            2
+        );
+
+    navigator.clipboard
+        .writeText(data)
+        .then(()=>{
+            toast("Build JSON copied!");
+        })
+        .catch(()=>{
+            toast("Clipboard unavailable");
+        });
+
+}
+
+
+/* RESET */
+
+function resetBuild(){
+
+    localStorage.removeItem(
+        "trucklab_build"
+    );
+
+    location.reload();
+
+}
+
+
+/* INITIAL */
 
 changePaint();
 changeTint();
-changeLED();
-changeGrille();
 changeLift();
 changeWheels();
-calculate();
+update();
 
 </script>
 
 </body>
 </html>
+```
